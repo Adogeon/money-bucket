@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "jest --verbose"
+    "test": "jest --verbose --watchAll"
   },
   "dependencies": {
     "react": "^17.0.2",
@@ -16,6 +16,7 @@
     "@babel/preset-react": "^7.16.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "@vitejs/plugin-react": "^1.0.7",
     "autoprefixer": "^10.4.0",
     "babel-jest": "^27.4.4",
