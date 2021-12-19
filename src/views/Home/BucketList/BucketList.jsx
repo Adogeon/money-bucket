@@ -15,7 +15,7 @@ const BucketView = () => {
   }, []);
 
   return (
-    <div className={"w-full flex"}>
+    <div className={"flex flex-col w-72 bg-white shadow-md "}>
       {buckets.map((bucket, index) => (
         <Bucket
           key={index}
