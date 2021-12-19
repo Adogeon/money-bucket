@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Bucket from "../Bucket/Bucket";
-import { getUserBucket } from "../../../API/Bucket/bucket.api";
+import {
+  useHomeDispatch,
+  useHomeState,
+} from "../../../context/HomePage/Home.Context";
+import { loadUserBucket } from "../../../context/HomePage/Home.action";
 
 const BucketView = () => {
-  const [buckets, setBuckets] = useState([]);
-
-  const fetchData = async () => {
-    const data = await getUserBucket();
-    setBuckets(data);
-  };
+  const state = useHomeState();
+  const dispatch = useHomeDispatch();
 
   useEffect(() => {
-    fetchData();
+    console.log(dispatch);
+    dispatch(loadUserBucket("123"));
   }, []);
 
   return (
     <div className={"flex flex-col w-72 bg-white shadow-md "}>
-      {buckets.map((bucket, index) => (
+      {state.bucketList.map((bucket, index) => (
         <Bucket
           key={index}
           name={bucket.name}

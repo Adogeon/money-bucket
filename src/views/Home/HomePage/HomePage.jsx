@@ -1,10 +1,11 @@
 import React from "react";
 import BucketList from "../BucketList/BucketList";
 import SpendingTable from "../SpendingTable/SpendingTable";
+import HomeProvider from "../../../context/HomePage/Home.provider";
 
 const HomePage = (data) => {
   return (
-    <>
+    <HomeProvider>
       <div className="w-screen flex border-b py-5 px-3 bg-gray-800 text-white justify-end space-x-3 mb-5">
         <button className="text-sm">Add a transaction</button>
         <button className="text-sm">Fill buckets</button>
@@ -23,7 +24,7 @@ const HomePage = (data) => {
           </div>
         </div>
       </div>
-    </>
+    </HomeProvider>
   );
 };
 

@@ -16,9 +16,9 @@ const Bucket = ({ name, spend, limit, ...restProps }) => {
         </div>
       </div>
 
-      <div class="w-full bg-gray-200 h-2 mb-6">
+      <div className={"w-full bg-gray-200 h-2 mb-6"}>
         <div
-          class="bg-blue-600 h-2"
+          className={"bg-blue-600 h-2"}
           style={{ width: `${bucketStatus}%` }}
         ></div>
       </div>
