@@ -8,7 +8,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="add" element={<AddPage />} />
-        <Route path="fill-bucket" element={<FillPage />} />
+        <Route path="fill" element={<FillPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -6,7 +6,9 @@ const Appbar = () => (
     <Link to="/add" className="text-sm">
       Add a transaction
     </Link>
-    <button className="text-sm">Fill buckets</button>
+    <Link to="/fill" className="text-sm">
+      Fill buckets
+    </Link>
   </div>
 );
 

@@ -1,11 +1,13 @@
 import React from "react";
 
-const Bucket = ({ name, spend, limit, ...restProps }) => {
-  const bucketStatus = (1 - spend / limit) * 100;
+const Bucket = ({ name, spend, limit, fill, ...restProps }) => {
   const available = limit - spend;
+  const fillStatus = ((available + fill) / limit) * 100;
+  const bucketStatus = (available / limit) * 100;
+
   return (
     <div
-      className={"w-full flex flex-col justify-between px-5 py-2 "}
+      className={"w-full flex flex-col justify-between mb-2 "}
       {...restProps}
     >
       <div className={"flex flex-row justify-between"}>
@@ -16,11 +18,15 @@ const Bucket = ({ name, spend, limit, ...restProps }) => {
         </div>
       </div>
 
-      <div className={"w-full bg-gray-200 h-2 mb-6"}>
+      <div className={" w-full bg-gray-200 h-2"}>
         <div
-          className={"bg-blue-600 h-2"}
+          className={"bg-green-400 h-2 top-0 z-10"}
+          style={{ width: `${fillStatus}%` }}
+        />
+        <div
+          className={"bg-blue-600 h-2 relative bottom-2 z-20"}
           style={{ width: `${bucketStatus}%` }}
-        ></div>
+        />
       </div>
     </div>
   );
