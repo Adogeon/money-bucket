@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import Router from "./Router";
+import Router from "./router";
 
 const App = () => {
   const [count, setCount] = useState(0);

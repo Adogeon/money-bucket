@@ -2,14 +2,12 @@ import React from "react";
 import BucketList from "../BucketList/BucketList";
 import SpendingTable from "../SpendingTable/SpendingTable";
 import HomeProvider from "../../../context/HomePage/Home.provider";
+import Appbar from "../Appbar/Appbar";
 
 const HomePage = (data) => {
   return (
     <HomeProvider>
-      <div className="w-screen flex border-b py-5 px-3 bg-gray-800 text-white justify-end space-x-3 mb-5">
-        <button className="text-sm">Add a transaction</button>
-        <button className="text-sm">Fill buckets</button>
-      </div>
+      <Appbar />
       <div className="container mx-auto flex flex-col">
         <div className="w-full flex justify-between space-x-5">
           <BucketList />

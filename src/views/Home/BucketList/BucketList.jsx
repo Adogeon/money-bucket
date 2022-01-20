@@ -11,12 +11,15 @@ const BucketView = () => {
   const dispatch = useHomeDispatch();
 
   useEffect(() => {
-    console.log(dispatch);
     dispatch(loadUserBucket("123"));
   }, []);
 
   return (
     <div className={"flex flex-col w-72 bg-white shadow-md "}>
+      <div className="flex justify-between px-5">
+        <p>Income</p>
+        <p>{state.income}</p>
+      </div>
       {state.bucketList.map((bucket, index) => (
         <Bucket
           key={index}
@@ -26,6 +29,10 @@ const BucketView = () => {
           data-testid={`bucket-${index}`}
         />
       ))}
+      <div className="flex justify-between px-5">
+        <p>Leftover</p>
+        <p>{state.leftover}</p>
+      </div>
     </div>
   );
 };

@@ -1,13 +1,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HomePage, AccountPage } from "../views";
+import { HomePage, AccountPage, AddPage, FillPage } from "../views";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<HomePage />} />
-        <Route path="/account" element={<AccountPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="add" element={<AddPage />} />
+        <Route path="fill-bucket" element={<FillPage />} />
       </Routes>
     </BrowserRouter>
   );
