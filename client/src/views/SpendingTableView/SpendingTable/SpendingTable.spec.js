@@ -1,6 +1,6 @@
 import React from "react";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import SpendingTable from "../SpendingTable/SpendingTable";
+import SpendingTable from "./SpendingTable";
 
 describe("Summary Table", () => {
   afterAll(() => cleanup());
