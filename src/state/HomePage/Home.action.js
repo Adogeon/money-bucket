@@ -23,8 +23,6 @@ const createAsyncThunk = (actionType, asynFunc) => (arg) => ({
       finished: createAction(`${actionType}/finished`),
       error: createAction(`${actionType}/error`),
     };
-    context.dispatch(thunk.pending());
-    console.log(asynFunc);
     asynFunc(arg, thunk)
       .then((result) => {
         context.dispatch(thunk.finished(result));
