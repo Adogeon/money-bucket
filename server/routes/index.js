@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const router = require("express").Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const bucketRouter = require("./bucket");
+const authRouter = require("./auth");
+const transactionRouter = require("./transaction");
+const userRouter = require("./user");
 
-module.exports = router;
+router.use("/auth", authRouter);
+router.use("/bucket", bucketRouter);
+router.use("/transaction", transactionRouter);
+router.use("/user", userRouter);
