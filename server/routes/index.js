@@ -9,3 +9,5 @@ router.use("/auth", authRouter);
 router.use("/bucket", bucketRouter);
 router.use("/transaction", transactionRouter);
 router.use("/user", userRouter);
+
+module.exports = router;
