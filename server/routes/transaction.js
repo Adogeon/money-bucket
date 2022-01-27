@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Transaction } = require("../models");
+const { Transaction } = require("../db/models");
 
 /**
  * @route POST /transaction

@@ -29,3 +29,5 @@ router.get("/:name", async (req, res, next) => {
     next(error);
   }
 });
+
+module.exports = router;

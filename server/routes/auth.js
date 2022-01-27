@@ -9,14 +9,14 @@ const { User } = require("../db/models");
  */
 router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
-
+  console.log(req.body);
   if (!username || !password)
-    return res.send(400).json({ error: "Username and password required" });
+    return res.status(400).json({ error: "Username and password required" });
 
   try {
     const userDoc = await User.findOne({ username: username });
     if (!userDoc) return res.sendStatus(401);
-    if (!User.comparePassword(password)) return res.sendStatus(401);
+    if (!userDoc.comparePassword(password)) return res.sendStatus(401);
     const token = jsonwebtoken.sign(
       {
         id: userDoc._id,
@@ -34,7 +34,7 @@ router.post("/register", async (req, res, next) => {
 
   if (!username || !email || !password)
     return res
-      .send(400)
+      .status(400)
       .json({ error: "Username, email, and password required" });
 
   try {

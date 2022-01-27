@@ -4,11 +4,11 @@ const SchemaObjectId = Schema.Types.ObjectId;
 const BucketSchema = new Schema({
   name: String,
   type: String,
-  user: { type: SchemaObjectId, ref: "user" },
+  user: { type: SchemaObjectId, ref: "User" },
 });
 
 BucketSchema.virtual("transactions", {
-  ref: "transaction",
+  ref: "Transaction",
   localField: "_id",
   foreignField: "bucket",
 });

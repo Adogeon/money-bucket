@@ -6,27 +6,24 @@ const UserSchema = new Schema({
   password: String,
 });
 
-UserSchema.virtual("recentTransactions", {
-  ref: "transaction",
+UserSchema.virtual("transactions", {
+  ref: "Transaction",
   localField: "_id",
   foreignField: "user",
 });
 
 UserSchema.virtual("buckets", {
-  ref: "bucket",
+  ref: "Bucket",
   localField: "_id",
   foreignField: "user",
 });
 
-UserSchema.pre("save", function (next) {
+UserSchema.pre("save", async function (next) {
   const user = this;
   if (!user.isModified("password")) return next();
 
-  bcrypt.hash(user.password, 10, function (err, hash) {
-    if (err) return next(err);
-    user.password = hash;
-    next();
-  });
+  user.password = await bcrypt.hash(user.password, 10);
+  next();
 });
 
 UserSchema.methods.comparePassword = async function (inputPassword) {
@@ -37,5 +34,7 @@ UserSchema.methods.comparePassword = async function (inputPassword) {
     throw error;
   }
 };
+
+UserSchema.set("toJSON", { virtuals: true });
 
 module.exports = UserSchema;

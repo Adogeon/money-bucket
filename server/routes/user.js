@@ -1,6 +1,5 @@
-const { User } = require("../models");
-
 const router = require("express").Router();
+const { User } = require("../db/models");
 
 /**
  * @route GET "/user/"
@@ -11,15 +10,11 @@ router.get("/", async (req, res, next) => {
   if (!req.user) return res.sendStatus(401);
   const userId = req.user.id;
   try {
-    const userDoc = await User.findById(userId);
-    const userBuckets = await userDoc.populate("buckets");
-    const userRecentTransactions = await userDoc.populate("transaction", {
-      options: { limit: 20, sort: { date: -1 } },
-    });
+    const userDoc = await User.findById(userId).populate("buckets");
+    if (!userDoc) return res.sendStatus(500);
 
     const userJSON = userDoc.toJSON();
-    userJSON.buckets = userBuckets;
-    userJSON.recentTransaction = userRecentTransactions;
+    delete userJSON.password;
 
     res.status(200).json({ ...userJSON });
   } catch (error) {

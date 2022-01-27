@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
     "seed": "node ./db/seed"
   },
   "dependencies": {
@@ -16,5 +17,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.7",
     "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }

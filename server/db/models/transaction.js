@@ -4,13 +4,13 @@ const SchemaObjectId = Schema.Types.ObjectId;
 const TransactionSchema = new Schema({
   summary: String,
   amount: Number,
-  bucket: { type: SchemaObjectId, ref: "bucket" },
+  bucket: { type: SchemaObjectId, ref: "Bucket" },
   type: String,
   date: Date,
-  user: { type: SchemaObjectId, ref: "user" },
+  user: { type: SchemaObjectId, ref: "User" },
 });
 
-Transaction.set("toJSON", {
+TransactionSchema.set("toJSON", {
   virtuals: true,
 });
 

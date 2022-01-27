@@ -1,19 +1,12 @@
 const mongoose = require("mongoose");
-const { User, Bucket, Transaction } = require("./modles/product");
-
-mongoose
-  .connect("mongodb:/localhost:27017/money-bucket", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("MONGO CONNECTION OPEN !!!");
-  });
+const { User, Bucket, Transaction } = require("./models");
 
 const seedDB = async () => {
-  const user1 = await User.create({ username: "thomas", password: "123456" });
+  await mongoose.connection.collections["user"].drop();
+  await mongoose.connection.collections["transaction"].drop();
+  await mongoose.connection.collections["bucket"].drop();
 
-  const bucket1 = await Bucket.create({});
+  const user1 = await User.create({ username: "thomas", password: "123456" });
 
   const seedBuckets = [
     { name: "Essential", limit: 100, type: "bucket", user: user1.id },
@@ -22,7 +15,7 @@ const seedDB = async () => {
   ];
 
   const seedBucketResult = await Bucket.insertMany(seedBuckets);
-  const bucketIds = seedBucketResult.insertedIds;
+  const bucketIds = seedBucketResult.map((bucket) => bucket._id);
 
   const seedTransaction = [
     {
@@ -61,7 +54,18 @@ const seedDB = async () => {
   await Transaction.insertMany(seedTransaction);
 };
 
-seedDB().then(() => {
-  mongoose.connection.close();
-  console.log("SEEDING FINISHED");
-});
+mongoose
+  .connect("mongodb://127.0.0.1:27017/moneybucket", {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("MONGO CONNECTION OPEN !!!");
+    return seedDB();
+  })
+  .then(() => {
+    mongoose.connection.close();
+    console.log("SEEDING FINISHED");
+  })
+  .catch((error) => {
+    console.error(error);
+  });
