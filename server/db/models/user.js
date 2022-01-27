@@ -6,7 +6,7 @@ const UserSchema = new Schema({
   password: String,
 });
 
-UserSchema.virtual("transactions", {
+UserSchema.virtual("recentTransactions", {
   ref: "transaction",
   localField: "_id",
   foreignField: "user",

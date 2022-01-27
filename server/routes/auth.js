@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const jsonwebtoken = require("jsonwebtoken");
 
-const { User } = require("../models");
+const { User } = require("../db/models");
 
 /**
  * @route POST /auth/login
@@ -32,7 +32,7 @@ router.post("/login", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   const { username, email, password } = req.body;
 
-  if (!username || !email || password)
+  if (!username || !email || !password)
     return res
       .send(400)
       .json({ error: "Username, email, and password required" });
