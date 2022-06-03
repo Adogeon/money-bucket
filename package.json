@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@types/express-jwt": "^6.0.4",
+    "@types/jsonwebtoken": "^8.5.8"
+  }
+}

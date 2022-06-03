@@ -10,8 +10,4 @@ const TransactionSchema = new Schema({
   user: { type: SchemaObjectId, ref: "User" },
 });
 
-TransactionSchema.set("toJSON", {
-  virtuals: true,
-});
-
 module.exports = TransactionSchema;
