@@ -95,5 +95,22 @@ router.get("/transaction/bucket/:name", async (req,res,next) => {
   }
 })
 
+/**
+ * @route PUT /transaction/:id
+ * for updating a transaction
+ */
+router.put("/transaction/bucket/:id", async (req: TypedBodyReq<Partial<iTransactionInput>>, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const transactionId = req.params.id;
+    const transactionDoc = await Transaction.findOne({_id: transactionId, user: userId});
+    if(!transactionDoc) throw new Error(`Can't find transaction with id ${transactionId}`)
+    const updatedDoc = await Transaction.findByIdAndUpdate(transactionId, req.body, {new: true});
+    const docJSON = updatedDoc?.toJSON();
+    res.status(200).json(docJSON);
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default router
