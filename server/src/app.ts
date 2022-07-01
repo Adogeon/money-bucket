@@ -1,8 +1,8 @@
 import express, {Express} from 'express';
-import { jwtMiddleware } from 'middleware/jwtMiddleware';
+import { jwtMiddleware } from './middleware/jwtMiddleware';
 import routers from "./routes";
 
-const app: Express = express();
+const app = express();
 
 app.use("/", jwtMiddleware())
 

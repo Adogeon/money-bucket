@@ -1,8 +1,8 @@
 import express, {Request, Response, NextFunction} from "express";
 import {ParamsDictionary } from "express-serve-static-core";
-import {assertHasUser } from "middleware/jwtMiddleware";
-import Transaction,{iTransaction} from "models/transaction";
-import Bucket from "models/bucket";
+import {assertHasUser } from "../middleware/jwtMiddleware";
+import Transaction,{iTransaction} from "../models/transaction";
+import Bucket from "../models/bucket";
 
 const router = express.Router()
 
