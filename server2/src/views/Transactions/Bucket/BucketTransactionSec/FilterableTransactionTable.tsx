@@ -10,7 +10,7 @@ interface transaction {
 
 const FilterableTransactionTable:React.FC<{transactions: transaction[]}> = ({transactions}) => {
   const [filterTerm, setFilterTerm] = React.useState('');
-  const [filteredData, setFilteredData] = React.useState<transaction[]>([]);
+  const [filteredData, setFilteredData] = React.useState<transaction[]>(transactions);
 
   const updateTerm = (input:string) => {
     setFilterTerm(input)
@@ -18,11 +18,11 @@ const FilterableTransactionTable:React.FC<{transactions: transaction[]}> = ({tra
 
   React.useEffect(() => {
     if(filterTerm !== '') {
-      setFilteredData(transactions.filter((transaction) => transaction.summary.includes(filterTerm)))
+      setFilteredData(transactions.filter((transaction) => transaction.summary.toLowerCase().includes(filterTerm.toLowerCase())))
     } else {
       setFilteredData(transactions);
     }
-  },[filterTerm])
+  },[filterTerm, transactions])
 
   return (
     <section className="flex flex-col">

@@ -22,6 +22,7 @@ const BucketTransactionSec:React.FC<{bucketId: number}> = ({bucketId}) => {
       const data = await fetchTransactionData();
       setTransactions(data.transactions)
     }
+    fetchData()
   })
 
   return (
