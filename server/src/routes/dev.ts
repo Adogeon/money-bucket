@@ -7,3 +7,5 @@ const router: Router = express.Router();
 router.get('/link', async ( req: Request, res: Response, next: NextFunction) => {
   res.json("We're connected!")
 })
+
+export default router;
