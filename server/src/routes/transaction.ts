@@ -77,14 +77,14 @@ router.get("/:id", async (req,res,next) => {
 });
 
 /**
- * @route GET /transaction/bucket/:name
+ * @route GET /transaction/bucket/:id
  * for gettting the bucket 
  */
-router.get("/transaction/bucket/:name", async (req,res,next) => {
+router.get("/transaction/bucket/:id", async (req,res,next) => {
   try {
     const userId = getUserId(req);
-    const bucketDoc = await Bucket.findOne({name: req.params.name, user: userId});
-    if(!bucketDoc) throw new Error(`Can't find bucket with name ${req.params.name}`);
+    const bucketDoc = await Bucket.findOne({_id: req.params.id, user: userId});
+    if(!bucketDoc) throw new Error(`Can't find bucket with name ${req.params.id}`);
     
     const transactions = await bucketDoc.populate('transactions');
     const bucketJSON = bucketDoc.toJSON();
