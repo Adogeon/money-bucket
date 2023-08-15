@@ -49,7 +49,7 @@ const SpendingTable = () => {
       </thead>
       <tbody>
         {data.map((transaction, index) => (
-          <SpendingRow transaction={transaction} />
+          <SpendingRow transaction={transaction} rIndex={index} />
         ))}
       </tbody>
     </table>
