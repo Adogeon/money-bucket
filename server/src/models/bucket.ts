@@ -20,6 +20,6 @@ BucketSchema.virtual("transactions", {
   foreignField: "bucket",
 });
 
-const Bucket = model<iBucket>("Bucket", BucketSchema);
+const Bucket = model<iBucket>("Bucket", BucketSchema,"bucket");
 
 export default Bucket;

@@ -22,6 +22,6 @@ TransactionSchema.set('toJSON', {
   virtuals: true
 })
 
-const Transaction = model<iTransaction>("Transaction", TransactionSchema);
+const Transaction = model<iTransaction>("Transaction", TransactionSchema,'transaction');
 
 export default Transaction

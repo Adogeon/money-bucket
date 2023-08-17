@@ -53,6 +53,6 @@ userSchema.methods.comparePassword = async function (this: iUser, inputPassword:
 
 userSchema.set('toJSON', {virtuals: true});
 
-const User = model<iUser>("User", userSchema);
+const User = model<iUser>("User", userSchema,"user");
 
 export default User;
