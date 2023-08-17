@@ -1,20 +1,34 @@
 import {Request, Response, NextFunction} from 'express';
 import jwt from "jsonwebtoken";
 
-export type RequestWithUser = Request & {
-  user: {
-    id: string
+/**
+ * jwtMiddleware
+ * @func an express middleWare function to verify jwtToken 
+ * 
+ * @param req: express request
+ * @param res: express response
+ * @param next: express next function
+ * 
+ * @return void
+ */
+export const jwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split('')[1];
+
+  // if no token is found
+  if (token == null) {
+    return res.sendStatus(401)
   }
-}
 
-export const assertHasUser = (req: Request): RequestWithUser => {
-  //type requestion
-    if (!req.body.user ) {
-        throw new Error("Request object without user found unexpectedly");
-    }
-    return req as RequestWithUser;
-}
+  jwt.verify(token, process.env.TOKEN_SECRET as string, (err: any, user: any) => {
+    console.log(err)
+    if (err)
+      return res.sendStatus(403);
 
+    req.user = user;
+    next();
+  })
+}
 
 //rewrite jwtMiddleware
 /*export const jwtMiddleware = () => jwt({
