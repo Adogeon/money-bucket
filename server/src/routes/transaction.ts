@@ -67,7 +67,7 @@ router.post("/multi", async (req: TypedBodyReq<iMultTransactionInput>, res, next
 router.get("/:month", async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    const transactionDocs = await Transaction.aggregate([{ $addFields: { $month: '$date' } }, { $match: { month: req.params.month, user: userId } }, { $project: { month: 0 } }])
+    const transactionDocs = await Transaction.aggregate([{ $match: { user: userId } }, { $addFields: { $month: '$date' } }, { $match: { month: req.params.month } }, {$sort: {date: -1}}, { $project: { month: 0 }} ])
     if (!transactionDocs) throw new Error("Something is wrong the document");
     const transactionsJSON = transactionDocs.map(doc => {
       doc.toJSON();
