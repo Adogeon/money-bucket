@@ -47,7 +47,7 @@ router.post("/login", async(req: Request<ParamsDictionary, any, authRequest>, re
  * @route POST /auth/register
  * expect {username, email, password } in req.body
  */
-router.post("./register", async (req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
+router.post("/register", async (req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password)
