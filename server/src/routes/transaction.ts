@@ -20,13 +20,13 @@ const getUserId = (req: Request): string => {
  * expect req.user
  * return a transaction document in JSON format
  */
-type iTransactionInput = Omit<iTransaction, "user">
+type iTransactionInput = Omit<iTransaction, "user">;
 router.post("/", async (req: TypedBodyReq<iTransactionInput>, res, next) => {
   try {
     const userId = getUserId(req);
     const transaction = await Transaction.create({ ...req.body, user: userId});
     const transactionJSON = transaction.toJSON();
-    res.json(200).json({ ...transactionJSON });
+    res.status(200).json({ ...transactionJSON });
   } catch (error) {
     next(error);
   }
@@ -52,7 +52,7 @@ router.post("/multi", async (req: TypedBodyReq<iMultTransactionInput>, res, next
     const transactionsJSON = transactionDocs.map((transaction) =>
       transaction.toJSON()
     );
-    res.json(200).json([...transactionsJSON]);
+    res.status(200).json([...transactionsJSON]);
   } catch (error) {
     next(error);
   }
