@@ -1,7 +1,9 @@
-export const LOG_IN_USER_PENDING = "LOG_IN_USER_PENDING";
-export const LOG_IN_USER_FINISHED = "LOG_IN_USER_FINISHED";
-export const REGISTER_NEW_USER_PENDING = "REGISTER_NEW_USER_PENDING";
-export const REGISTER_NEW_USER_FINISHED = "REGISTER_NEW_USER_FINISHED";
+export const LOG_IN_USER = "LOG_IN_USER";
+export const LOG_IN_USER_PENDING = "LOG_IN_USER/pending";
+export const LOG_IN_USER_FINISHED = "LOG_IN_USER/finished";
+export const REGISTER_NEW_USER = "REGISTER_NEW_USER";
+export const REGISTER_NEW_USER_PENDING = "REGISTER_NEW_USER/pending";
+export const REGISTER_NEW_USER_FINISHED = "REGISTER_NEW_USER/finsihed";
 export const LOG_OUT_USER = "LOG_OUT_USER";
 
 export const AuthInitialState = {
