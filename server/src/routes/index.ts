@@ -7,3 +7,5 @@ const router:Router = express.Router();
 router.use('/auth', authRouter);
 router.use('/transaction', transactionRouter)
 export default router;
+
+//TODO: Rewrite all routes from js files to tsc files
