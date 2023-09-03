@@ -5,7 +5,12 @@ import {
 
 import { createAction, createAsyncThunk } from "../utils/factory";
 
-import { LOG_IN_USER, LOG_OUT_USER, REGISTER_NEW_USER } from "./auth.reducer";
+import {
+	LOAD_USER_FROM_BROWSER,
+	LOG_IN_USER,
+	LOG_OUT_USER,
+	REGISTER_NEW_USER,
+} from "./auth.reducer";
 
 export const loginUser = createAsyncThunk(
 	LOG_IN_USER,
@@ -14,7 +19,7 @@ export const loginUser = createAsyncThunk(
 		return token;
 	}
 );
-
+export const loadUser = createAction(LOAD_USER_FROM_BROWSER, token);
 export const logOutUSer = createAction(LOG_OUT_USER);
 export const registerUser = createAsyncThunk(
 	REGISTER_NEW_USER,
