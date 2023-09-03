@@ -15,8 +15,7 @@ export const getBucketDetail = async (bucketName, userToken) => {
 		if (fetchResponse.status !== 200) {
 			throw new Error(fetchResponse.statusText);
 		}
-		const result = await fetchResponse.json();
-		return result;
+		return await fetchResponse.json();
 	} catch (error) {
 		console.log(error);
 	}

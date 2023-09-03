@@ -12,7 +12,7 @@ import {
 const SpendingTable = () => {
 	const homeStore = useHomeState();
 	const homeDispatch = useHomeDispatch();
-
+	// TODO: add action to fetch month transaction
 	const loadData = async () => {
 		console.log(await fetch("/api"));
 		const userToken = await fetchUserLoginToken("thomas", "12345");

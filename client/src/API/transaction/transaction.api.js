@@ -11,7 +11,7 @@ export const addTransaction = async (newTransaction, token) => {
 		if (fetchResponse.status !== 200) {
 			throw new Error(fetchResponse.error);
 		}
-		return fetchResponse.body;
+		return await fetchResponse.json();
 	} catch (error) {
 		console.log(error);
 	}
@@ -28,6 +28,8 @@ export const getCurrentMonthTransactions = async (month, token) => {
 		if (fetchResponse.status !== 200) {
 			throw new Error(fetchResponse.error);
 		}
+
+		return await fetchResponse.json();
 	} catch (error) {
 		console.log(error);
 	}
