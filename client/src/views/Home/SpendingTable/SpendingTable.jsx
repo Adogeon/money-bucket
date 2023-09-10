@@ -1,31 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SpendingRow from "./SpendingRow";
 import { fetchUserLoginToken } from "../../../API/auth/auth.api";
-import { loadUserBucket } from "../../../state/HomePage/Home.action";
-import { getUserBucket } from "../../../API/Bucket/bucket.api";
-import { getCurrentMonthTransactions } from "../../../API/transaction/transaction.api";
+import { getMonthTransactions } from "../../../API/transaction/transaction.api";
 import {
 	useHomeDispatch,
 	useHomeState,
 } from "../../../state/HomePage/Home.context";
+import { useAuthToken } from "../../../state/Auth/auth.context";
 
 const SpendingTable = () => {
 	const homeStore = useHomeState();
 	const homeDispatch = useHomeDispatch();
 	// TODO: add action to fetch month transaction
+
+	const [data, setData] = useState([]);
+	const [month, setMonth] = useState("022023");
+
 	const loadData = async () => {
-		console.log(await fetch("/api"));
 		const userToken = await fetchUserLoginToken("thomas", "12345");
-		console.log(userToken);
-		const transaction = await getCurrentMonthTransactions(2, userToken);
-		console.log(transaction);
+		const transactions = await getMonthTransactions(userToken, month);
+
+		setData(transactions);
 	};
 
 	useEffect(() => {
 		loadData();
-	});
+	}, [month]);
 
-	const data = [
+	/*const data = [
 		{
 			date: "02/12/21",
 			summary: "Video games",
@@ -50,7 +52,7 @@ const SpendingTable = () => {
 			amount: "40",
 			bucket: "Clothing",
 		},
-	];
+	];*/
 
 	return (
 		<table className="w-full text-center shadow-md">

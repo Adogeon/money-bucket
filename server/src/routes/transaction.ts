@@ -1,5 +1,7 @@
 import express, {Request} from "express";
-import {ParamsDictionary } from "express-serve-static-core";
+import { ParamsDictionary } from "express-serve-static-core";
+import mongoose from 'mongoose';
+
 import Transaction,{iTransaction} from "../models/transaction";
 import Bucket from "../models/bucket";
 
@@ -7,12 +9,12 @@ const router = express.Router()
 
 type TypedBodyReq<T> = Request<ParamsDictionary, {}, T>
 
-const getUserId = (req: Request): string => {
+const getUserId = (req: Request): mongoose.Types.ObjectId => {
   if (!req.user) {
     throw Error("Can't find user in request")
   }
-  return req.user.id;
-} 
+  return new mongoose.Types.ObjectId(req.user.id)
+};
 
 /**
  * @route POST /transaction
@@ -64,15 +66,43 @@ router.post("/multi", async (req: TypedBodyReq<iMultTransactionInput>, res, next
  * 
  * return multiple transaction within a month
  */
-router.get("/:month", async (req, res, next) => {
+router.get("/:monthyear", async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    const transactionDocs = await Transaction.aggregate([{ $match: { user: userId } }, { $addFields: { $month: '$date' } }, { $match: { month: req.params.month } }, {$sort: {date: -1}}, { $project: { month: 0 }} ])
+    const reqMonth = Number(req.params.monthyear.slice(0, 2));
+    const reqYear = Number(req.params.monthyear.slice(2));
+    const transactionDocs = await Transaction.aggregate(
+      [
+        { $match: { user: userId } },
+        {
+          $addFields: {
+            month: { $month: '$date' }, year: { $year: "$date" }
+          }
+        }, {
+          $match: {
+            month: reqMonth, year: reqYear
+          }
+        }, {
+          $sort: {
+            date: -1
+          }
+        }, {
+          $lookup: {
+            from: 'bucket',
+            localField: 'bucket',
+            foreignField: '_id',
+            as: 'bucket',
+            pipeline: [{ $project: { type: 0, user: 0 } }]
+          }
+        }, {
+          $project: {
+            month: 0, year: 0, _v: 0
+          }
+        }
+      ]
+    );
     if (!transactionDocs) throw new Error("Something is wrong the document");
-    const transactionsJSON = transactionDocs.map(doc => {
-      doc.toJSON();
-    })
-    res.status(200).json(transactionsJSON);
+    res.status(200).json(transactionDocs);
   } catch (error) {
     next(error)
   }

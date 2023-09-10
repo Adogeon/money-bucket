@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk(
 		return token;
 	}
 );
-export const loadUser = createAction(LOAD_USER_FROM_BROWSER, token);
+export const loadUser = createAction(LOAD_USER_FROM_BROWSER);
 export const logOutUSer = createAction(LOG_OUT_USER);
 export const registerUser = createAsyncThunk(
 	REGISTER_NEW_USER,

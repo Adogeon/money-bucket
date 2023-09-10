@@ -17,9 +17,20 @@ export const addTransaction = async (newTransaction, token) => {
 	}
 };
 
-export const getCurrentMonthTransactions = async (month, token) => {
+export const getMonthTransactions = async (token, month) => {
+	let monthyear;
+	if (!month) {
+		const tDate = new Date();
+		monthyear =
+			`${tDate.getMonth() + 1}`.padStart(2, "0") +
+			`${tDate.getFullYear()}`;
+		console.log(monthyear);
+	} else {
+		monthyear = month;
+	}
+
 	try {
-		const fetchResponse = await fetch(`/${month}`, {
+		const fetchResponse = await fetch(`api/transaction/${monthyear}`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 				"Content-Type": "application/json",
