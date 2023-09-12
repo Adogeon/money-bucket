@@ -10,4 +10,3 @@ router.use('/auth', authRouter);
 router.use('/transaction', jwtMiddleware, transactionRouter)
 export default router;
 
-//TODO: Rewrite all routes from js files to tsc files
