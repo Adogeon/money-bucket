@@ -1,6 +1,7 @@
 import HomePage from "./Home";
-import AccountPage from "../views/AccountPage";
+import LoginPage from "./AuthPage/LoginPage";
+import RegisterPage from "./AuthPage/RegisterPage";
 import AddPage from "./AddPage";
 import FillPage from "./FillPage";
 
-export { HomePage, AccountPage, AddPage, FillPage };
+export { HomePage, LoginPage, RegisterPage, AddPage, FillPage };
