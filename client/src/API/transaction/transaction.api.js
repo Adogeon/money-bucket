@@ -1,3 +1,5 @@
+import { useAuthToken } from "../../state/Auth/auth.context";
+
 export const addTransaction = async (newTransaction, token) => {
 	try {
 		const fetchResponse = await fetch("/", {

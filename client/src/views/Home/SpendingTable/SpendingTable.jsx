@@ -8,7 +8,7 @@ import {
 } from "../../../state/HomePage/Home.context";
 import { useAuthToken } from "../../../state/Auth/auth.context";
 
-const SpendingTable = () => {
+const SpendingTable = ({ userToken }) => {
 	const homeStore = useHomeState();
 	const homeDispatch = useHomeDispatch();
 	// TODO: add action to fetch month transaction
@@ -17,7 +17,8 @@ const SpendingTable = () => {
 	const [month, setMonth] = useState("022023");
 
 	const loadData = async () => {
-		const userToken = await fetchUserLoginToken("thomas", "12345");
+		//const userToken = await fetchUserLoginToken("thomas", "12345");
+
 		const transactions = await getMonthTransactions(userToken, month);
 
 		setData(transactions);
@@ -26,33 +27,6 @@ const SpendingTable = () => {
 	useEffect(() => {
 		loadData();
 	}, [month]);
-
-	/*const data = [
-		{
-			date: "02/12/21",
-			summary: "Video games",
-			amount: "30",
-			bucket: "Media",
-		},
-		{
-			date: "02/15/21",
-			summary: "Streaming service",
-			amount: "10",
-			bucket: "Media",
-		},
-		{
-			date: "02/12/21",
-			summary: "Grocery",
-			amount: "50",
-			bucket: "Essential",
-		},
-		{
-			date: "02/14/21",
-			summary: "Socks",
-			amount: "40",
-			bucket: "Clothing",
-		},
-	];*/
 
 	return (
 		<table className="w-full text-center shadow-md">

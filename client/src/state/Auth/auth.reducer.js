@@ -22,7 +22,7 @@ export const AuthReducer = (state, action) => {
 				isAuthenticate: true,
 				userToken: action.payload,
 			};
-		case LOG_IN_USER_FINISHED:
+		case REGISTER_NEW_USER_FINISHED:
 			return {
 				...state,
 				isAuthenticate: true,

@@ -16,6 +16,7 @@ export const loginUser = createAsyncThunk(
 	LOG_IN_USER,
 	async (username, password) => {
 		const token = await fetchUserLoginToken(username, password);
+		console.log(token);
 		return token;
 	}
 );

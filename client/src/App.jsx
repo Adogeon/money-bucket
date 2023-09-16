@@ -1,28 +1,16 @@
 import React from "react";
 import {
 	createBrowserRouter,
-	RouterProviders,
+	createRoutesFromElements,
+	RouterProvider,
 	Outlet,
 	Routes,
 	Route,
 } from "react-router-dom";
 import { HomePage, AddPage, FillPage } from "./views";
 import AuthProvider from "./state/Auth/auth.provider";
-
-const Root = () => {
-	//TODO - migrate to new react-router-dom version
-	return (
-		<div className="App">
-			<AuthProvider>
-				<Routes>
-					<Route path="/" element={<HomePage />} />
-					<Route path="add" element={<AddPage />} />
-					<Route path="fill" element={<FillPage />} />
-				</Routes>
-			</AuthProvider>
-		</div>
-	);
-};
+import { loginUser } from "./state/Auth/auth.action";
+import Appbar from "./components/Appbar/Appbar";
 
 const Layout = () => {
 	return (
@@ -30,6 +18,7 @@ const Layout = () => {
 			<AuthProvider>
 				<header>
 					<h1>Nav bar go here</h1>
+					<Appbar />
 				</header>
 				<main>
 					<Outlet />
@@ -40,16 +29,18 @@ const Layout = () => {
 	);
 };
 
-const router = createBrowserRouter([
-	{
-		path: "*",
-		Component: Layout,
-		children: [{ path: "/", Component: HomePage }],
-	},
-]);
+const router = createBrowserRouter(
+	createRoutesFromElements(
+		<Route element={<Layout />}>
+			<Route path="/" element={<HomePage />} />
+			<Route path="add" element={<AddPage />} />
+			<Route path="fill" element={<FillPage />} />
+		</Route>
+	)
+);
 
 const App = () => {
-	return <RouterProviders router={router} />;
+	return <RouterProvider router={router} />;
 };
 
 export default App;

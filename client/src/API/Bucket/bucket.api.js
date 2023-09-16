@@ -1,3 +1,5 @@
+import { useAuthToken } from "../../state/Auth/auth.context";
+
 export const getUserBucket = async () => {
 	const result = await [
 		{ id: 1, name: "Essential", spend: 60, limit: 100 },
@@ -7,10 +9,11 @@ export const getUserBucket = async () => {
 	return result;
 };
 
-export const getBucketDetail = async (bucketName, userToken) => {
+export const getBucketDetail = async (bucketName) => {
 	try {
+		const token = useAuthToken();
 		const fetchResponse = await fetch(`/bucket/${bucketName}`, {
-			headers: { Authorization: `Bearer ${userToken}` },
+			headers: { Authorization: `Bearer ${token}` },
 		});
 		if (fetchResponse.status !== 200) {
 			throw new Error(fetchResponse.statusText);

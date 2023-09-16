@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Bucket from "../Bucket/Bucket";
+import React, { useEffect } from "react";
+import Bucket from "./Bucket";
 import {
 	useHomeDispatch,
 	useHomeState,
 } from "../../../state/HomePage/Home.context";
 import { loadUserBucket } from "../../../state/HomePage/Home.action";
 
-const BucketView = () => {
+const BucketView = ({ userToken }) => {
 	const state = useHomeState();
 	const dispatch = useHomeDispatch();
 
