@@ -5,22 +5,27 @@ import HomeProvider from "../../../state/HomePage/Home.provider";
 import {
 	useAuthDispatch,
 	useAuthToken,
+	useAuthState,
 } from "../../../state/Auth/auth.context";
 import { loginUser } from "../../../state/Auth/auth.action";
 
 const HomePage = (data) => {
-	const userToken = useAuthToken();
+	const authStore = useAuthState();
 	const testAuthDispatch = useAuthDispatch();
 
 	useEffect(() => {
 		testAuthDispatch(loginUser("thomas", "12345"));
 	}, []);
 
-	return (
+	return authStore.isPending ? (
+		<>
+			<div>Loading user ... </div>
+		</>
+	) : (
 		<HomeProvider>
 			<div className="container mx-auto flex flex-col">
 				<div className="w-full flex justify-between space-x-5">
-					<BucketList userToken={userToken} />
+					<BucketList userToken={authStore.userToken} />
 					<div className={"w-4/5"}>
 						<span>Welcome</span>
 						<div className="w-full flex justify-center">
@@ -28,7 +33,7 @@ const HomePage = (data) => {
 							<div>currentMonth</div>
 							<button>{">"}</button>
 						</div>
-						<SpendingTable userToken={userToken} />
+						<SpendingTable userToken={authStore.userToken} />
 					</div>
 				</div>
 			</div>

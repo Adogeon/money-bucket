@@ -11,21 +11,31 @@ export const AuthInitialState = {
 	userToken: "",
 	isAuthenticate: false,
 	isNewUser: false,
+	isPending: false,
 };
 
 export const AuthReducer = (state, action) => {
+	console.log(action);
 	switch (action.type) {
 		case LOAD_USER_FROM_BROWSER:
 		case LOG_IN_USER_FINISHED:
 			return {
 				...state,
 				isAuthenticate: true,
+				isPending: false,
 				userToken: action.payload,
+			};
+		case LOG_IN_USER_PENDING:
+		case REGISTER_NEW_USER_PENDING:
+			return {
+				...state,
+				isPending: true,
 			};
 		case REGISTER_NEW_USER_FINISHED:
 			return {
 				...state,
 				isAuthenticate: true,
+				isPending: false,
 				userToken: action.payload,
 				isNewUser: true,
 			};
