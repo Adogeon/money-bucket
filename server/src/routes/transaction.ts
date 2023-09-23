@@ -1,16 +1,19 @@
-import express, {Request} from "express";
-import { ParamsDictionary } from "express-serve-static-core";
+import express from "express"; 
+import type {Request, RequestHandler} from "express";
+import type { ParamsDictionary } from "express-serve-static-core";
 import mongoose from 'mongoose';
 
-import Transaction,{iTransaction} from "../models/transaction";
+import Transaction from "../models/transaction";
+import type {iTransaction} from "../models/transaction";
 import Bucket from "../models/bucket";
+
 
 const router = express.Router()
 
-type TypedBodyReq<T> = Request<ParamsDictionary, {}, T>
+type TypedBodyReq<T> = Request<ParamsDictionary, Record<string, any>, T>
 
 const getUserId = (req: Request): mongoose.Types.ObjectId => {
-  if (!req.user) {
+  if (req.user === undefined) {
     throw Error("Can't find user in request")
   }
   return new mongoose.Types.ObjectId(req.user.id)
@@ -23,7 +26,7 @@ const getUserId = (req: Request): mongoose.Types.ObjectId => {
  * return a transaction document in JSON format
  */
 type iTransactionInput = Omit<iTransaction, "user">;
-router.post("/", async (req: TypedBodyReq<iTransactionInput>, res, next) => {
+router.post("/", (async (req: TypedBodyReq<iTransactionInput>, res, next) => {
   try {
     const userId = getUserId(req);
     const transaction = await Transaction.create({ ...req.body, user: userId});
@@ -32,7 +35,7 @@ router.post("/", async (req: TypedBodyReq<iTransactionInput>, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+}) as RequestHandler);
 
 /**
  * @route POST /transaction/multi
@@ -43,7 +46,7 @@ router.post("/", async (req: TypedBodyReq<iTransactionInput>, res, next) => {
 interface iMultTransactionInput {
   transactions: iTransaction[]
 }
-router.post("/multi", async (req: TypedBodyReq<iMultTransactionInput>, res, next) => {
+router.post("/multi", (async (req: TypedBodyReq<iMultTransactionInput>, res, next) => {
   try {
     const userId = getUserId(req);
     const transactions = req.body.transactions.map((transaction) => ({
@@ -58,7 +61,7 @@ router.post("/multi", async (req: TypedBodyReq<iMultTransactionInput>, res, next
   } catch (error) {
     next(error);
   }
-});
+}) as RequestHandler);
 
 /**
  * @route GET /transaction/:month
@@ -66,7 +69,7 @@ router.post("/multi", async (req: TypedBodyReq<iMultTransactionInput>, res, next
  * 
  * return multiple transaction within a month
  */
-router.get("/:monthyear", async (req, res, next) => {
+router.get("/:monthyear", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
     const reqMonth = Number(req.params.monthyear.slice(0, 2));
@@ -101,12 +104,12 @@ router.get("/:monthyear", async (req, res, next) => {
         }
       ]
     );
-    if (!transactionDocs) throw new Error("Something is wrong the document");
+    if (transactionDocs.length === 0) throw new Error("Something is wrong the document");
     res.status(200).json(transactionDocs);
   } catch (error) {
     next(error)
   }
-})
+}) as RequestHandler);
 
 /**
  * @route GET /transaction/:id
@@ -115,27 +118,27 @@ router.get("/:monthyear", async (req, res, next) => {
  * 
  * return a specific transaction
  */
-router.get("/:id", async (req,res,next) => {
+router.get("/:id", (async (req,res,next) => {
   try {
     const userId = getUserId(req);
     const transactionDoc = await Transaction.findOne({_id: req.params.id, user: userId});
-    if(!transactionDoc) throw new Error("Can't find the specific document ")
+    if(transactionDoc === null) throw new Error("Can't find the specific document ")
     const transactionJSON = transactionDoc.toJSON()
     res.json(200).json(transactionJSON);
   } catch (error) {
     next(error);
   }
-});
+}) as RequestHandler);
 
 /**
  * @route GET /transaction/bucket/:name
  * for gettting the bucket 
  */
-router.get("/bucket/:name", async (req,res,next) => {
+router.get("/bucket/:name", (async (req,res,next) => {
   try {
     const userId = getUserId(req);
     const bucketDoc = await Bucket.findOne({name: req.params.name, user: userId});
-    if(!bucketDoc) throw new Error(`Can't find bucket with name ${req.params.name}`);
+    if(bucketDoc === null) throw new Error(`Can't find bucket with name ${req.params.name}`);
     
     const transactions = await bucketDoc.populate('transactions');
     const bucketJSON = bucketDoc.toJSON();
@@ -144,7 +147,7 @@ router.get("/bucket/:name", async (req,res,next) => {
   } catch(error) {
     next(error)
   }
-})
+}) as RequestHandler);
 
 
 export default router

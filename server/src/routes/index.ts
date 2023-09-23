@@ -1,4 +1,5 @@
-import express, {Router} from 'express';
+import express from "express"; 
+import type {Router} from 'express';
 import authRouter from "./auth";
 import transactionRouter from "./transaction";
 

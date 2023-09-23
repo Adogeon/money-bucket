@@ -1,14 +1,15 @@
-import {Schema, Document, model} from "mongoose";
+import {Schema, model} from "mongoose";
 import bcrypt from "bcrypt";
-import {iTransaction} from "./transaction";
-import {iBucket} from "./bucket";
+import type {Document} from "mongoose";
+import type {iTransaction} from "./transaction";
+import type {iBucket} from "./bucket";
 
 export interface iUser extends Document {
   username: string,
   password: string,
   transaction?: iTransaction[],
   buckets?: iBucket[],
-  comparePassword(inputPassword:string): Promise<boolean>,
+  comparePassword: (inputPassword:string) => Promise<boolean>,
 }
 
 const userSchema = new Schema<iUser>({
@@ -29,18 +30,18 @@ userSchema.virtual("buckets", {
 });
 
 userSchema.pre<iUser>("save", async function (next) {
-  const user = this;
-  if (!user.isModified("password")) return next();
-
-  user.password = await bcrypt.hash(user.password, 10);
+  if (this.isModified("password")) {
+    console.log("Hello")
+    this.password = await bcrypt.hash(this.password, 10);
+  }
   next();
 });
 
-/*userSchema.post<iUser>("find", async function(docs) {
+/* userSchema.post<iUser>("find", async function(docs) {
   for (let doc of docs) {
     await doc.populate('transactions buckets')
   }
-})*/
+}) */
 
 userSchema.methods.comparePassword = async function (this: iUser, inputPassword: string): Promise<boolean> {
   try {

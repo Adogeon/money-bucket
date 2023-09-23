@@ -1,5 +1,6 @@
-import express, {Router, Request, Response, NextFunction} from "express";
-import {ParamsDictionary} from "express-serve-static-core";
+import express from 'express';
+import type {Router, Request, Response, NextFunction, RequestHandler} from "express";
+import type {ParamsDictionary} from "express-serve-static-core";
 import * as jsonwebtoken from 'jsonwebtoken';
 import User from "../models/user";
 
@@ -22,15 +23,15 @@ const serverSecret = ():string => {
     throw new Error("Enviroment secret is undefined!");
 }
 
-router.post("/login", async(req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
+router.post("/login", (async(req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
-  if (!username || !password)
+  if (username === "" || password === "")
     return res.status(400).json({ error: "Username and password required" });
 
   try {
-    const userDoc = await User.findOne({ username: username });
-    if (!userDoc) return res.sendStatus(401);
-    if (!userDoc.comparePassword(password)) return res.sendStatus(401);
+    const userDoc = await User.findOne({ username });
+    if (userDoc === null) return res.sendStatus(401);
+    if (await userDoc.comparePassword(password)) {
     const token = jsonwebtoken.sign(
       {
         id: userDoc._id,
@@ -38,19 +39,22 @@ router.post("/login", async(req: Request<ParamsDictionary, any, authRequest>, re
       serverSecret()
     );
     res.status(200).json(token);
+  } else {
+      res.status(401)
+    }
   } catch (error) {
     next(error);
   }
-})
+}) as RequestHandler)
 
 /**
  * @route POST /auth/register
  * expect {username, email, password } in req.body
  */
-router.post("/register", async (req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
+router.post("/register", (async (req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
 
-  if (!username || !email || !password)
+  if (username === "" || email === "" || password === "")
     return res
       .status(400)
       .json({ error: "Username, email, and password required" });
@@ -62,7 +66,7 @@ router.post("/register", async (req: Request<ParamsDictionary, any, authRequest>
   } catch (error) {
     next(error);
   }
-})
+}) as RequestHandler);
 
 export default router;
 
