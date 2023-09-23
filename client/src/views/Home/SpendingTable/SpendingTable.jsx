@@ -12,7 +12,6 @@ import {useAuthToken} from '../../../state/Auth/auth.context';
 const SpendingTable = ({userToken}) => {
   const homeStore = useHomeState();
   const homeDispatch = useHomeDispatch();
-  console.log(userToken);
   // TODO: add action to fetch month transaction
 
   const [data, setData] = useState([]);
@@ -23,9 +22,11 @@ const SpendingTable = ({userToken}) => {
 
     const transactions = await getMonthTransactions(userToken, month);
     if (transactions === undefined) {
-      transactions = [];
+     setData([]);
+    } else {
+     setData(transactions); 
     }
-    setData(transactions);
+    
   };
 
   useEffect(() => {

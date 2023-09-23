@@ -1,15 +1,19 @@
 import React from "react";
-import { AddForm } from "../AddPage";
+import AddForm from "./AddForm";
 import { useNavigate } from "react-router-dom";
+import { addTransaction } from "../../API/transaction/transaction.api";
+import { useAuthState } from "../../state/Auth/auth.context";
 
 const AddPage = () => {
 	const navigate = useNavigate();
+	const authState = useAuthState();
+	console.log(authState);
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const name = e.target["spend-name"].value;
 		const amount = e.target["spend-amount"].value;
-		let date = e.target["spend-date"].value;
-		date = new Date(date).toISOString();
+		const date =  new Date(e.target["spend-date"].value).toISOString();
 		const bucket = e.target["spend-bucket"].value;
 		const note = e.target["spend-note"].value;
 
@@ -21,9 +25,7 @@ const AddPage = () => {
 			note,
 			type: "CR",
 		};
-
-		console.log(transaction);
-
+		addTransaction(transaction, authState.userToken)
 		navigate("/", { replace: true });
 	};
 

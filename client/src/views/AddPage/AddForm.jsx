@@ -1,6 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 
-const AddForm = ({ handleSubmit, buckets }) => (
+const AddForm = ({ handleSubmit, buckets }) => {
+
+ const today = new Date().toISOString().split("T")[0];
+ const [dateValue, setDateValue] = useState(today);
+ 
+  return (
   <form onSubmit={handleSubmit} className="mb-4">
     <div className="flex flex-col mb-4">
       <label htmlFor="spend-name" className="mb-1 text-grey text-left">
@@ -29,7 +34,9 @@ const AddForm = ({ handleSubmit, buckets }) => (
       <input
         name="spend-date"
         type="date"
-        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
+        value={dateValue}
+        onChange={e => setDateValue(e.target.value)}
       />
     </div>
     <div className="flex flex-col mb-4">
@@ -39,10 +46,10 @@ const AddForm = ({ handleSubmit, buckets }) => (
       <select
         name="spend-bucket"
         type="date"
-        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
       >
-        {buckets.map((bucket) => (
-          <option>{bucket}</option>
+        {buckets.map((bucket,index) => (
+          <option key={`bucket-${index}`}>{bucket}</option>
         ))}
       </select>
     </div>
@@ -52,7 +59,7 @@ const AddForm = ({ handleSubmit, buckets }) => (
       </label>
       <textarea
         name="spend-note"
-        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
       />
     </div>
     <button
@@ -62,6 +69,6 @@ const AddForm = ({ handleSubmit, buckets }) => (
       Save
     </button>
   </form>
-);
+)};
 
 export default AddForm;
