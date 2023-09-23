@@ -7,21 +7,32 @@ export const StoreContext = React.createContext({});
 
 const initialState = { transaction: {}, bucket: {}, user: {} };
 const rootReducer = combineReducer({
-	transactionReducer,
-	bucketReducer,
-	userReducer,
+  transaction: transactionReducer,
+  bucket: bucketReducer,
+  user: userReducer,
 });
-const StoreProvider = (props) => {
-	const [state, dispatch] = useReducer(rootReducer, initialState);
-	const value = useMemo(() => {
-		state, dispatch;
-	}, [state]);
 
-	return (
-		<StoreContext.Provider value={value}>
-			{props.children}
-		</StoreContext.Provider>
-	);
+console.log(rootReducer);
+
+const StoreProvider = (props) => {
+  const [state, dispatch] = useReducer(rootReducer, initialState);
+  console.log(state);
+  console.log(dispatch);
+  const value = useMemo(
+    () => ({
+      state,
+      dispatch,
+    }),
+    [state]
+  );
+
+  console.log(value);
+
+  return (
+    <StoreContext.Provider value={value}>
+      {props.children}
+    </StoreContext.Provider>
+  );
 };
 
 export default StoreProvider;

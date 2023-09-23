@@ -1,9 +1,9 @@
-export default function (slices) {
+export default function (reducers) {
   return (state, action) => {
-    Object.keys(slices).reduce(
-      (acc, prop) => ({
+    return Object.keys(reducers).reduce(
+      (acc, nextKey) => ({
         ...acc,
-        [prop]: slices[prop](acc[prop], action),
+        [nextKey]: reducers[nextKey](acc[nextKey], action),
       }),
       state
     );

@@ -11,6 +11,7 @@ import { HomePage, AddPage, FillPage } from "./views";
 import AuthProvider from "./state/Auth/auth.provider";
 import { loginUser } from "./state/Auth/auth.action";
 import Appbar from "./components/Appbar/Appbar";
+import TestPage from "./views/test";
 
 const Layout = () => {
 	return (
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
 			<Route path="/" element={<HomePage />} />
 			<Route path="add" element={<AddPage />} />
 			<Route path="fill" element={<FillPage />} />
+			<Route path="test" element={<TestPage />} />
 		</Route>
 	)
 );

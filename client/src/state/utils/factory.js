@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-//hooks factory
+// hooks factory  
 export const createUseStoreValueHook = (store, storeName) => () => {
 	const context = useContext(store);
 	if (context === undefined) {
@@ -26,7 +26,7 @@ export const createUseStoreDispatchHook = (store, storeName) => () => {
 	};
 };
 
-//action factory
+// action factory
 export const createAction = (actionType) => (payload) => {
 	return payload === "undefined"
 		? { type: actionType }
