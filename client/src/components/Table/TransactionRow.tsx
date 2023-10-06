@@ -1,7 +1,11 @@
-import React from "react";
+import type { Transaction } from "../../types/transaction";
 
-const SpendingRow = ({ transaction, rIndex }) => (
-	<tr className="bg-white border-b" key={rIndex}>
+interface TransactionRowProps {
+	transaction: Transaction,
+}
+
+const TransactionRow = ({ transaction }: TransactionRowProps): JSX.Element => (
+	<tr className="bg-white border-b" >
 		<td className="px-6 py-4 font-medium text-sm text-gray-500">
 			{new Date(transaction.date).toLocaleDateString()}
 		</td>
@@ -9,12 +13,12 @@ const SpendingRow = ({ transaction, rIndex }) => (
 			{transaction.summary}
 		</td>
 		<td className="px-6 py-4 font-medium text-sm text-gray-500">
-			{transaction.bucket[0].name}
+			{transaction.bucket}
 		</td>
 		<td className="px-6 py-4 font-medium text-sm text-gray-500">
-			{transaction.amount}
+			{`${transaction.amount.value} ${transaction.amount.currency}`}
 		</td>
 	</tr>
 );
 
-export default SpendingRow;
+export default TransactionRow;

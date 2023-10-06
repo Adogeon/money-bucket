@@ -1,17 +1,39 @@
+const createPostCall = (url, auth, body) => {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+};
+
+const createGetCall = (url, auth) => {
+  return fetch(url, {
+    headers: {
+      Authorization: `Bearer ${auth}`,
+    },
+  });
+};
+
+const handleResponse = async (response) => {
+  if (response.status === 200) {
+    return await response.json();
+  } else {
+    throw new Error("Something went horribly wrong");
+  }
+};
+
 export const addTransaction = async (newTransaction, token) => {
   try {
-    const fetchResponse = await fetch(`api/transaction/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newTransaction),
-    });
-    if (fetchResponse.status !== 200) {
-      throw new Error(fetchResponse.error);
-    }
-    return await fetchResponse.json();
+    const fetchResponse = await createPostCall(
+      `api/transaction/`,
+      token,
+      newTransaction
+    );
+    const result = await handleResponse(fetchResponse);
+    return result;
   } catch (error) {
     console.log(error);
   }
@@ -29,17 +51,9 @@ export const getMonthTransactions = async (token, month) => {
   }
 
   try {
-    const fetchResponse = await fetch(`api/transaction/${monthyear}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    if (fetchResponse.status !== 200) {
-      throw new Error(fetchResponse.error);
-    }
-
-    return await fetchResponse.json();
+    const fetchResponse = createGetCall(`api/transaction/${monthyear}`, token);
+    const result = await handleResponse(fetchResponse);
+    return result;
   } catch (error) {
     console.log(error);
   }

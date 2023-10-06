@@ -1,6 +1,11 @@
-import React from "react";
+interface BucketSummaryProps {
+  name: string,
+  limit: number,
+  spend: number,
+  fill: number
+}
 
-const Bucket = ({ name, spend, limit, fill, ...restProps }) => {
+const BucketSummary = ({ name, spend, limit, fill }: BucketSummaryProps) : JSX.Element=> {
   const available = limit - spend;
   const fillStatus = ((available + fill) / limit) * 100;
   const bucketStatus = (available / limit) * 100;
@@ -8,7 +13,6 @@ const Bucket = ({ name, spend, limit, fill, ...restProps }) => {
   return (
     <div
       className={"w-full flex flex-col justify-between mb-2 "}
-      {...restProps}
     >
       <div className={"flex flex-row justify-between"}>
         <div className={"font-semibold"}>{name}</div>
@@ -32,4 +36,4 @@ const Bucket = ({ name, spend, limit, fill, ...restProps }) => {
   );
 };
 
-export default Bucket;
+export default BucketSummary;

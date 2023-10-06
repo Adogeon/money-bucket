@@ -1,19 +1,16 @@
-import React from "react";
 import {
 	createBrowserRouter,
 	createRoutesFromElements,
 	RouterProvider,
 	Outlet,
-	Routes,
 	Route,
 } from "react-router-dom";
 import { HomePage, AddPage, FillPage } from "./views";
 import AuthProvider from "./state/Auth/auth.provider";
-import { loginUser } from "./state/Auth/auth.action";
 import Appbar from "./components/Appbar/Appbar";
 import TestPage from "./views/test";
 
-const Layout = () => {
+const Layout = (): JSX.Element => {
 	return (
 		<>
 			<AuthProvider>
@@ -41,8 +38,7 @@ const router = createBrowserRouter(
 	)
 );
 
-const App = () => {
-	return <RouterProvider router={router} />;
-};
+const App = ():JSX.Element => <RouterProvider router={router} />;
+;
 
 export default App;

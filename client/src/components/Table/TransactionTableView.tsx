@@ -1,7 +1,12 @@
-import React from 'react';
+import type { Transaction } from "../../types/transaction"
+import TransactionRow from "./TransactionRow"
 
-const SpendingTableView = ({data}) => {
-    return (
+interface TransactionTableViewInterface {
+	transactions: Transaction[]
+}
+
+const TransactionTableView = ({ transactions }: TransactionTableViewInterface): JSX.Element => {
+  return (
     <table className="w-full text-center shadow-md">
 			<thead className="border-b bg-gray-800">
 				<tr>
@@ -28,11 +33,11 @@ const SpendingTableView = ({data}) => {
 				</tr>
 			</thead>
 			<tbody>
-				{data.map((transaction, index) => (
-					<SpendingRow transaction={transaction} rIndex={index} />
+				{transactions.map((transaction, index: number) => (
+					<TransactionRow transaction={transaction} key={`row-${index}`} />
 				))}
 			</tbody>
 		</table>)
 }
 
-export default SpendingTableView;
+export default TransactionTableView
