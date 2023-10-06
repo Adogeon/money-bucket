@@ -1,5 +1,10 @@
 export const LOAD_BUCKET = "LOAD_BUCKET";
 
+export const bucketInitialState = {
+  isLoading: false,
+  bucketList: [],
+};
+
 export const loadBucketToStore = (payload) => {
   return { type: LOAD_BUCKET, payload };
 };
@@ -7,9 +12,7 @@ export const loadBucketToStore = (payload) => {
 const bucketReducer = (state, action) => {
   switch (action.type) {
     case LOAD_BUCKET:
-      const stateCopy = { ...state };
-      stateCopy.bucketList = action.payload;
-      return stateCopy;
+      return { ...state, bucketList: action.payload };
     default:
       return state;
   }

@@ -1,18 +1,28 @@
 import React, { useReducer, useMemo } from "react";
 import combineReducer from "./utils/combineReducer";
 
-import { bucketReducer, transactionReducer, userReducer } from "./reducers";
+import {
+  authReducer,
+  bucketReducer,
+  transactionReducer,
+  userReducer,
+  authInitialState,
+} from "./reducers";
 
 export const StoreContext = React.createContext({});
 
-const initialState = { transaction: {}, bucket: {}, user: {} };
+const initialState = {
+  transaction: {},
+  bucket: {},
+  user: {},
+  auth: authInitialState,
+};
 const rootReducer = combineReducer({
   transaction: transactionReducer,
   bucket: bucketReducer,
   user: userReducer,
+  auth: authReducer,
 });
-
-console.log(rootReducer);
 
 const StoreProvider = (props) => {
   const [state, dispatch] = useReducer(rootReducer, initialState);
