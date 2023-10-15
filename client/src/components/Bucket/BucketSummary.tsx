@@ -1,19 +1,16 @@
-interface BucketSummaryProps {
-  name: string,
-  limit: number,
-  spend: number,
-  fill: number
+export interface iBucketSummary {
+  name: string;
+  limit: number;
+  spend: number;
 }
-
-const BucketSummary = ({ name, spend, limit, fill }: BucketSummaryProps) : JSX.Element=> {
+const BucketSummary = ({ name, spend, limit }: iBucketSummary): JSX.Element => {
+  const fill = 20;
   const available = limit - spend;
   const fillStatus = ((available + fill) / limit) * 100;
   const bucketStatus = (available / limit) * 100;
 
   return (
-    <div
-      className={"w-full flex flex-col justify-between mb-2 "}
-    >
+    <div className={"w-full flex flex-col justify-between mb-2 "}>
       <div className={"flex flex-row justify-between"}>
         <div className={"font-semibold"}>{name}</div>
         <div className={"flex flex-col"}>

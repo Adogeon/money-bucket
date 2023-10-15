@@ -1,9 +1,6 @@
 import { useState, useContext, createContext } from "react";
 import type { ReactNode } from "react";
-import {
-  fetchUserLoginToken,
-  fetchUserRegisterToken,
-} from "../API/auth/auth.api";
+import { fetchUserLoginToken, fetchUserRegisterToken } from "../API/auth.api";
 
 const authContext = createContext<iUseAuth | undefined>(undefined);
 

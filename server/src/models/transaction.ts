@@ -1,4 +1,5 @@
-import {Schema, Types, model} from "mongoose";
+import {Schema, model} from "mongoose";
+import type {Types} from "mongoose";
 
 export interface iTransaction {
   summary: string,

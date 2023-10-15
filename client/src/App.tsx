@@ -10,6 +10,8 @@ import type { ReactNode } from "react";
 import { ProvideAuth, useAuth } from "./context/AuthContext";
 import Appbar from "./components/Appbar/Appbar";
 
+import Home from "./container/Home";
+
 const Layout = (): JSX.Element => {
   return (
     <>
@@ -39,10 +41,6 @@ const AuthContainer = ({ children }: { children: ReactNode }): JSX.Element => {
   return <React.Fragment>{children}</React.Fragment>;
 };
 
-const Home = (): JSX.Element => (
-  <div>Homepage with summary of current month</div>
-);
-
 const Buckets = (): JSX.Element => <div> List of bucket summary</div>;
 const Bucket = (): JSX.Element => (
   <div>Bucket Detail with transactions within the list</div>
@@ -59,7 +57,7 @@ const AddTransaction = (): JSX.Element => (
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<Layout />}>
+    <Route path="/" element={<Layout />}>
       <Route path="bucket" element={<Buckets />}>
         <Route path=":bucketId" element={<Bucket />} />
         <Route path="new" element={<AddBucket />} />

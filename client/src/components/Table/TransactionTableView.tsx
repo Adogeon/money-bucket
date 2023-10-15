@@ -11,6 +11,8 @@ const TransactionTableView = ({
   isLoading,
 }: TransactionTableViewInterface): JSX.Element => {
   return isLoading ? (
+    <div>Loading table ...</div>
+  ) : (
     <table className="w-full text-center shadow-md">
       <thead className="border-b bg-gray-800">
         <tr>
@@ -34,8 +36,6 @@ const TransactionTableView = ({
         ))}
       </tbody>
     </table>
-  ) : (
-    <div>Loading table ...</div>
   );
 };
 

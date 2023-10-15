@@ -1,5 +1,6 @@
-import {Schema, Types, model, PopulatedDoc, Document} from "mongoose";
-import { iTransaction } from "./transaction";
+import {Schema, model } from "mongoose";
+import type {Types, PopulatedDoc, Document} from "mongoose";
+import type { iTransaction } from "./transaction";
 
 export interface iBucket {
   name: string;

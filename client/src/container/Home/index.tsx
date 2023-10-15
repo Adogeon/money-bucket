@@ -4,9 +4,21 @@ import type { Transaction } from "../../types/transaction";
 import { useAuth } from "../../context/AuthContext";
 import { useApi } from "../../hooks/useAPI";
 import { getMonthTransactions } from "../../API/transaction.api";
+import { getBucketSummaries } from "../../API/bucket.api";
+import BucketListView from "../../components/Bucket/BucketListView";
 
 function UserBucket(): JSX.Element {
-  return <div>User bucket list of bucket summary</div>;
+  const [getBucketsResponse, APIGetBuckets] = useApi(getBucketSummaries);
+  useEffect(() => {
+    console.log("getBucket", getBucketsResponse);
+    APIGetBuckets();
+  }, []);
+  return (
+    <BucketListView
+      bucketList={getBucketsResponse.data}
+      isLoading={getBucketsResponse.isFetching}
+    />
+  );
 }
 
 interface MonthlySpendingTableProps {
@@ -22,14 +34,16 @@ function MonthlySpendingTable({
   const [response, APIGetMonthTransactions] = useApi(getMonthTransactions);
 
   useEffect(() => {
+    console.log("MONTH", month);
     APIGetMonthTransactions(month);
+    console.log("Transactions", response);
     if (response.isSuccess) {
       setMonthTransactions(response.data);
     }
   }, [month]);
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex flex-col justify-center">
       <MonthSelector initialMonth={month} />
       <TransactionTableView
         transactions={monthTransations}
@@ -85,15 +99,19 @@ interface HomeControllerProps {
   renderFc: (initialData: HomePresentationProps) => JSX.Element;
 }
 function HomeContainer({ renderFc }: HomeControllerProps): JSX.Element {
-  const { signin, isLoading, isCached, loadCache } = useAuth();
+  const { user, signin, isLoading, isLogin, isCached, loadCache } = useAuth();
+
+  console.log("Jello");
 
   useEffect(() => {
+    console.log(user);
+    console.log(isLoading);
     if (isCached) {
       loadCache();
     } else {
       signin("thomas", "12345");
     }
-  });
+  }, []);
   const defaultData = {
     monthlySpending: {
       month: new Date(),
@@ -102,18 +120,29 @@ function HomeContainer({ renderFc }: HomeControllerProps): JSX.Element {
     buckets: [],
   };
 
-  return isLoading ? <div>Loading user ... </div> : renderFc(defaultData);
+  return isLogin ? (
+    isLoading ? (
+      <div>Loading user ... </div>
+    ) : (
+      renderFc(defaultData)
+    )
+  ) : (
+    <div>User isn't log in ...</div>
+  );
 }
 
 export default function Home(): JSX.Element {
   return (
     <HomeContainer
-      renderFc={(data) => (
-        <HomePresentation
-          monthlySpending={data.monthlySpending}
-          buckets={data.buckets}
-        />
-      )}
+      renderFc={(data) => {
+        console.log("Hi");
+        return (
+          <HomePresentation
+            monthlySpending={data.monthlySpending}
+            buckets={data.buckets}
+          />
+        );
+      }}
     />
   );
 }
