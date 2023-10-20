@@ -1,120 +1,95 @@
 const mongoose = require("mongoose");
-const { User, Bucket, Transaction } = require("./models");
+const fs = require("fs/promises");
+
+const parseCSVToObject = (rawData) => {
+  const rows = rawData.split("\r\n");
+  const labels = rows[0].split(",");
+  const data = rows.slice(1).map((row) => {
+    const cells = row.split(",");
+    const result = {};
+    labels.forEach((label, index) => {
+      result[label] = cells[index];
+    });
+    return result;
+  });
+  return data;
+};
 
 const seedDB = async () => {
-	await mongoose.connection.collections["user"].drop();
-	await mongoose.connection.collections["transaction"].drop();
-	await mongoose.connection.collections["bucket"].drop();
+  try {
+    const bucketRaw = await fs.readFile("./db/Budget.csv", {
+      encoding: "utf8",
+    });
+    const seedBucketRaw = parseCSVToObject(bucketRaw);
 
-	const user1 = await User.create({ username: "thomas", password: "123456" });
+    const transactionRaw = await fs.readFile("./db/personal_transactions.csv", {
+      encoding: "utf8",
+    });
+    const seedTransactionRaw = parseCSVToObject(transactionRaw);
 
-	const seedBuckets = [
-		{ name: "Essential", limit: 100, type: "bucket", user: user1.id },
-		{ name: "Food", limit: 200, type: "bucket", user: user1.id },
-		{ name: "Media", limit: 50, type: "bucket", user: user1.id },
-		{ name: "Clothing", limit: 100, type: "bucket", user: user1.id },
-	];
+    await mongoose.connection.collections["user"].drop();
+    await mongoose.connection.collections["transaction"].drop();
+    await mongoose.connection.collections["bucket"].drop();
 
-	const seedBucketResult = await Bucket.insertMany(seedBuckets);
-	const bucketIds = seedBucketResult.map((bucket) => bucket._id);
+    const user1 = await mongoose.connection.collections["user"].insertOne({
+      username: "thomas",
+      password: "123456",
+      currency: "USD",
+    });
 
-	const seedTransaction = [
-		{
-			date: new Date("02/12/23"),
-			summary: "Video games",
-			amount: 30,
-			type: "CR",
-			bucket: bucketIds[2],
-			user: user1.id,
-		},
-		{
-			date: new Date("02/15/23"),
-			summary: "Streaming service",
-			amount: 10,
-			type: "CR",
-			bucket: bucketIds[2],
-			user: user1.id,
-		},
-		{
-			date: new Date("02/12/23"),
-			summary: "Grocery",
-			amount: 50,
-			type: "CR",
-			bucket: bucketIds[1],
-			user: user1.id,
-		},
-		{
-			date: new Date("02/14/23"),
-			summary: "Socks",
-			amount: 40,
-			type: "CR",
-			bucket: bucketIds[3],
-			user: user1.id,
-		},
-		{
-			date: new Date("04/10/23"),
-			summary: "Video games",
-			amount: 30,
-			type: "CR",
-			bucket: bucketIds[2],
-			user: user1.id,
-		},
-		{
-			date: new Date("04/15/23"),
-			summary: "Streaming service",
-			amount: 10,
-			type: "CR",
-			bucket: bucketIds[2],
-			user: user1.id,
-		},
-		{
-			date: new Date("04/22/23"),
-			summary: "Grocery",
-			amount: 50,
-			type: "CR",
-			bucket: bucketIds[1],
-			user: user1.id,
-		},
-		{
-			date: new Date("03/01/23"),
-			summary: "Video games",
-			amount: 30,
-			type: "CR",
-			bucket: bucketIds[2],
-			user: user1.id,
-		},
-		{
-			date: new Date("03/15/23"),
-			summary: "Streaming service",
-			amount: 10,
-			type: "CR",
-			bucket: bucketIds[2],
-			user: user1.id,
-		},
-		{
-			date: new Date("03/15/23"),
-			summary: "Grocery",
-			amount: 50,
-			type: "CR",
-			bucket: bucketIds[1],
-			user: user1.id,
-		},
-	];
-	await Transaction.insertMany(seedTransaction);
+    const seedBuckets = seedBucketRaw.map((bucket) => {
+      return {
+        name: bucket["Category"],
+        defaultLimit: { amount: bucket["Budget"], currency: "USD" },
+        type: "bucket",
+        user: user1.insertedId,
+      };
+    });
+
+    const seedBucketResult = await mongoose.connection.collections[
+      "bucket"
+    ].insertMany(seedBuckets);
+    const bucketIdsObjs = seedBuckets.map((buckets, index) => ({
+      name: buckets.name,
+      id: seedBucketResult.insertedIds[index],
+    }));
+
+    const bucketIdMap = {};
+    bucketIdsObjs.forEach((object) => {
+      Object.assign(bucketIdMap, { [object.name]: object.id });
+    });
+
+    const seedTransactions = seedTransactionRaw.map((transaction) => {
+      return {
+        summary: transaction["Description"],
+        amount: transaction["Amount"],
+        currency: "USD",
+        type: transaction["Transaction Type"],
+        date: new Date(transaction["Date"]),
+        bucket: bucketIdMap[transaction["Category"]],
+        user: user1.insertedId,
+      };
+    });
+    await mongoose.connection.collections["transaction"].insertMany(
+      seedTransactions
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 mongoose
-	.connect("mongodb://127.0.0.1:27017/moneybucket", {
-		useNewUrlParser: true,
-	})
-	.then(() => {
-		console.log("MONGO CONNECTION OPEN !!!");
-		return seedDB();
-	})
-	.then(() => {
-		mongoose.connection.close();
-		console.log("SEEDING FINISHED");
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+  .connect("mongodb://127.0.0.1:27017/moneybucket", {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("MONGO CONNECTION OPEN !!!");
+    return seedDB();
+  })
+  .then(() => {
+    mongoose.connection.close();
+    console.log("SEEDING FINISHED");
+  })
+  .catch((error) => {
+    console.error(error);
+  });
