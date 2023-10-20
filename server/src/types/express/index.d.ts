@@ -1,9 +1,10 @@
-import express from 'express';
+import express from "express";
+import type { iUserAuth } from "src/middleware/authMiddleware";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: Record<string,any>
+      user?: iUserAuth;
     }
   }
 }

@@ -1,27 +1,29 @@
-import {Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
-import type {Document} from "mongoose";
-import type {iTransaction} from "./transaction";
-import type {iBucket} from "./bucket";
+import type { Document } from "mongoose";
+import type { iTransaction } from "./transaction";
+import type { iBucket } from "./bucket";
 
 export interface iUser extends Document {
-  username: string,
-  password: string,
-  transaction?: iTransaction[],
-  buckets?: iBucket[],
-  comparePassword: (inputPassword:string) => Promise<boolean>,
+  username: string;
+  password: string;
+  currency: string;
+  transaction?: iTransaction[];
+  buckets?: iBucket[];
+  comparePassword: (inputPassword: string) => Promise<boolean>;
 }
 
 const userSchema = new Schema<iUser>({
-  username: {type: String, required: true},
-  password: {type: String, required: true}
-})
+  username: { type: String, required: true },
+  password: { type: String, required: true },
+  currency: { type: String, default: "USD" },
+});
 
 userSchema.virtual("transactions", {
   ref: "Transaction",
   localField: "_id",
-  foreignField: 'user',
-})
+  foreignField: "user",
+});
 
 userSchema.virtual("buckets", {
   ref: "Bucket",
@@ -31,7 +33,7 @@ userSchema.virtual("buckets", {
 
 userSchema.pre<iUser>("save", async function (next) {
   if (this.isModified("password")) {
-    console.log("Hello")
+    console.log("Hello");
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();
@@ -43,7 +45,10 @@ userSchema.pre<iUser>("save", async function (next) {
   }
 }) */
 
-userSchema.methods.comparePassword = async function (this: iUser, inputPassword: string): Promise<boolean> {
+userSchema.methods.comparePassword = async function (
+  this: iUser,
+  inputPassword: string
+): Promise<boolean> {
   try {
     const isMatch = await bcrypt.compare(inputPassword, this.password);
     return isMatch;
@@ -53,8 +58,8 @@ userSchema.methods.comparePassword = async function (this: iUser, inputPassword:
   }
 };
 
-userSchema.set('toJSON', {virtuals: true});
+userSchema.set("toJSON", { virtuals: true });
 
-const User = model<iUser>("User", userSchema,"user");
+const User = model<iUser>("User", userSchema, "user");
 
 export default User;
