@@ -33,7 +33,6 @@ userSchema.virtual("buckets", {
 
 userSchema.pre<iUser>("save", async function (next) {
   if (this.isModified("password")) {
-    console.log("Hello");
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();
