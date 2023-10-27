@@ -1,10 +1,9 @@
 import express from "express";
 import type { Request, Response, NextFunction, RequestHandler } from "express";
-import mongoose from "mongoose";
 
-import Bucket from "src/models/bucket";
+import Bucket from "../models/bucket";
 import { getUserId } from "./utils";
-import Transaction from "src/models/transaction";
+import Transaction from "../models/transaction";
 
 const router = express.Router();
 

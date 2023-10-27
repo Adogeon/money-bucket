@@ -1,7 +1,13 @@
-import express from 'express';
-import type {Router, Request, Response, NextFunction, RequestHandler} from "express";
-import type {ParamsDictionary} from "express-serve-static-core";
-import * as jsonwebtoken from 'jsonwebtoken';
+import express from "express";
+import type {
+  Router,
+  Request,
+  Response,
+  NextFunction,
+  RequestHandler,
+} from "express";
+import type { ParamsDictionary } from "express-serve-static-core";
+import * as jsonwebtoken from "jsonwebtoken";
 import User from "../models/user";
 
 const router: Router = express.Router();
@@ -11,19 +17,22 @@ const router: Router = express.Router();
  */
 
 interface authRequest {
-  username: string,
-  password: string,
-  email?: string
+  username: string;
+  password: string;
+  email?: string;
 }
 
-const serverSecret = ():string => {
-    if (typeof process.env.SECRET !== "undefined") {
-      return process.env.SECRET
-    }
-    throw new Error("Enviroment secret is undefined!");
-}
+const serverSecret = (): string => {
+  if (typeof process.env.SECRET !== "undefined") {
+    return process.env.SECRET;
+  }
+  throw new Error("Enviroment secret is undefined!");
+};
 
-router.post("/login", (async(req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
+router.post("/login", (async (
+  req: Request<ParamsDictionary, any, authRequest>,
+  res: Response
+) => {
   const { username, password } = req.body;
   if (username === "" || password === "")
     return res.status(400).json({ error: "Username and password required" });
@@ -31,27 +40,33 @@ router.post("/login", (async(req: Request<ParamsDictionary, any, authRequest>, r
   try {
     const userDoc = await User.findOne({ username });
     if (userDoc === null) return res.sendStatus(401);
-    if (await userDoc.comparePassword(password)) {
-    const token = jsonwebtoken.sign(
-      {
-        id: userDoc._id,
-      },
-      serverSecret()
-    );
-    res.status(200).json(token);
-  } else {
-      res.status(401)
+    const isMatch = await userDoc.comparePassword(password);
+    if (isMatch) {
+      const token = jsonwebtoken.sign(
+        {
+          id: userDoc._id,
+        },
+        serverSecret()
+      );
+      console.log(token);
+      res.status(200).json(token);
+    } else {
+      res.sendStatus(401);
     }
   } catch (error) {
-    next(error);
+    throw error;
   }
-}) as RequestHandler)
+}) as RequestHandler);
 
 /**
  * @route POST /auth/register
  * expect {username, email, password } in req.body
  */
-router.post("/register", (async (req: Request<ParamsDictionary, any, authRequest>, res: Response, next: NextFunction) => {
+router.post("/register", (async (
+  req: Request<ParamsDictionary, any, authRequest>,
+  res: Response,
+  next: NextFunction
+) => {
   const { username, email, password } = req.body;
 
   if (username === "" || email === "" || password === "")
@@ -62,11 +77,10 @@ router.post("/register", (async (req: Request<ParamsDictionary, any, authRequest
   try {
     const userDoc = await User.create(req.body);
     const token = jsonwebtoken.sign({ id: userDoc._id }, serverSecret());
-    res.status(200).json(token);
+    return res.status(200).json(token);
   } catch (error) {
     next(error);
   }
 }) as RequestHandler);
 
 export default router;
-
