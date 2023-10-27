@@ -8,8 +8,13 @@ interface iResponse {
   error: Error | null;
   isSuccess: boolean;
 }
+export type callApiFnc<T extends (...args: any) => any> = (
+  ...args: Parameters<T> extends [infer A, ...infer R] ? R : never
+) => void;
 
-export function useApi(apiFunction: apiFunc): [iResponse, any] {
+export function useApi<T extends apiFunc<any>>(
+  apiFunction: T
+): [iResponse, callApiFnc<T>] {
   const [response, setResponse] = useState({
     data: null,
     isFetching: false,
@@ -18,7 +23,7 @@ export function useApi(apiFunction: apiFunc): [iResponse, any] {
   });
   const { user } = useAuth();
 
-  const fetchMethod = (args?: any): void => {
+  const fetchMethod = (...args: any) => {
     setResponse({
       data: null,
       isFetching: true,
@@ -26,7 +31,7 @@ export function useApi(apiFunction: apiFunc): [iResponse, any] {
       isSuccess: false,
     });
     console.log("APIFunc", apiFunction);
-    apiFunction(user, args)
+    apiFunction(user, ...args)
       .then((res: any) => {
         console.log("response", res);
         setResponse({

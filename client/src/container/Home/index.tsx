@@ -4,15 +4,18 @@ import type { Transaction } from "../../types/transaction";
 import { useAuth } from "../../context/AuthContext";
 import { useApi } from "../../hooks/useAPI";
 import { getMonthTransactions } from "../../API/transaction.api";
-import { getBucketSummaries } from "../../API/bucket.api";
+import { getMonthlyBucketSummary } from "../../API/bucket.api";
 import BucketListView from "../../components/Bucket/BucketListView";
 
-function UserBucket(): JSX.Element {
-  const [getBucketsResponse, APIGetBuckets] = useApi(getBucketSummaries);
+interface userBucketProps {
+  month: Date;
+}
+function UserBucket({ month }: userBucketProps): JSX.Element {
+  const [getBucketsResponse, APIGetBuckets] = useApi(getMonthlyBucketSummary);
   useEffect(() => {
     console.log("getBucket", getBucketsResponse);
-    APIGetBuckets();
-  }, []);
+    APIGetBuckets(month);
+  }, [month]);
   return (
     <BucketListView
       bucketList={getBucketsResponse.data}
@@ -31,24 +34,31 @@ function MonthlySpendingTable({
 }: MonthlySpendingTableProps): JSX.Element {
   const [monthTransations, setMonthTransactions] = useState(initialData);
   const [month, setMonth] = useState(inititalMonth);
-  const [response, APIGetMonthTransactions] = useApi(getMonthTransactions);
-
+  const [getMonthResponse, APIGetMonthTransactions] =
+    useApi(getMonthTransactions);
   useEffect(() => {
     console.log("MONTH", month);
     APIGetMonthTransactions(month);
-    console.log("Transactions", response);
-    if (response.isSuccess) {
-      setMonthTransactions(response.data);
+    console.log("Transactions", getMonthResponse);
+    if (getMonthResponse.isSuccess) {
+      setMonthTransactions(getMonthResponse.data);
     }
   }, [month]);
 
   return (
     <div className="w-full flex flex-col justify-center">
       <MonthSelector initialMonth={month} />
-      <TransactionTableView
-        transactions={monthTransations}
-        isLoading={response.isFetching}
-      />
+      <div className="flex justify-between space-x-5">
+        <div>
+          <UserBucket month={month} />
+        </div>
+        <div>
+          <TransactionTableView
+            transactions={monthTransations}
+            isLoading={getMonthResponse.isFetching}
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -83,7 +93,6 @@ function HomePresentation({
   return (
     <div className="container mx-auto flex flex-col">
       <div className="w-full flex justify-between space-x-5">
-        <UserBucket />
         <div className={"w-4/5"}>
           <MonthlySpendingTable
             initialData={monthlySpending.transactions}

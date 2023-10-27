@@ -1,8 +1,7 @@
-import type { apiFunc } from ".";
 import { createRequest, handleResponse } from "./factory.api";
 
-export const addTransaction: apiFunc = async (
-  user,
+export const addTransaction = async (
+  user: string | null,
   newTransaction: any
 ): Promise<any> => {
   try {
@@ -19,10 +18,23 @@ export const addTransaction: apiFunc = async (
   }
 };
 
-export const getMonthTransactions: apiFunc = async (
-  user,
+interface iTransactionView {
+  summary: string;
+  amount: number;
+  currency: string;
+  type: string;
+  date: Date;
+  bucket: {
+    name: string;
+    id: string;
+  };
+}
+
+type iMonthTransactions = Array<iTransactionView>;
+export const getMonthTransactions = async (
+  user: string | null,
   month: Date = new Date()
-): Promise<any> => {
+): Promise<iMonthTransactions> => {
   const monthyear =
     `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
 
@@ -35,5 +47,6 @@ export const getMonthTransactions: apiFunc = async (
     return result;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };

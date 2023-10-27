@@ -14,6 +14,7 @@ interface iUseAuth {
   register: (username: string, password: string, email: string) => void;
   loadCache: () => void;
 }
+
 const useProvideAuth = (): iUseAuth => {
   const [user, setUser] = useState<string | null>(null);
   const [errors, setErrors] = useState([]);

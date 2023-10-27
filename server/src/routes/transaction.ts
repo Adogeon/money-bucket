@@ -1,7 +1,6 @@
 import express from "express";
 import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
-import mongoose from "mongoose";
 
 import Transaction from "../models/transaction";
 import type { iTransaction } from "../models/transaction";
