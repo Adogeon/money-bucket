@@ -28,6 +28,7 @@ const useProvideAuth = (): iUseAuth => {
     setIsLoading(true);
     fetchUserLoginToken(username, password)
       .then((res) => {
+        console.log(res?.status);
         res
           ?.json()
           .then((user) => {

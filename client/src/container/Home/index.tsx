@@ -37,24 +37,20 @@ function MonthlySpendingTable({
   const [getMonthResponse, APIGetMonthTransactions] =
     useApi(getMonthTransactions);
   useEffect(() => {
-    console.log("MONTH", month);
     APIGetMonthTransactions(month);
     console.log("Transactions", getMonthResponse);
-    if (getMonthResponse.isSuccess) {
-      setMonthTransactions(getMonthResponse.data);
-    }
   }, [month]);
 
   return (
     <div className="w-full flex flex-col justify-center">
       <MonthSelector initialMonth={month} />
-      <div className="flex justify-between space-x-5">
-        <div>
+      <div className="flex flex-col lg:flex-row justify-evenly">
+        <div className="lg:w-1/4">
           <UserBucket month={month} />
         </div>
-        <div>
+        <div className="lg:w-2/3">
           <TransactionTableView
-            transactions={monthTransations}
+            transactions={getMonthResponse.data ?? []}
             isLoading={getMonthResponse.isFetching}
           />
         </div>
@@ -93,12 +89,10 @@ function HomePresentation({
   return (
     <div className="container mx-auto flex flex-col">
       <div className="w-full flex justify-between space-x-5">
-        <div className={"w-4/5"}>
-          <MonthlySpendingTable
-            initialData={monthlySpending.transactions}
-            inititalMonth={monthlySpending.month}
-          />
-        </div>
+        <MonthlySpendingTable
+          initialData={monthlySpending.transactions}
+          inititalMonth={monthlySpending.month}
+        />
       </div>
     </div>
   );
@@ -113,17 +107,15 @@ function HomeContainer({ renderFc }: HomeControllerProps): JSX.Element {
   console.log("Jello");
 
   useEffect(() => {
-    console.log(user);
-    console.log(isLoading);
     if (isCached) {
       loadCache();
     } else {
-      signin("thomas", "12345");
+      signin("thomas", "123456");
     }
   }, []);
   const defaultData = {
     monthlySpending: {
-      month: new Date(),
+      month: new Date("12/30/2022"),
       transactions: [],
     },
     buckets: [],

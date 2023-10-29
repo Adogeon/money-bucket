@@ -12,12 +12,12 @@ const BucketListView = ({
   return isLoading ? (
     <div>Loading buckets ...</div>
   ) : (
-    <div className={"flex flex-col w-72 bg-white shadow-md "}>
+    <div className={"flex flex-col bg-white shadow-lg border-2 px-2"}>
       {bucketList?.map((bucket, index) => (
         <BucketSummary
           key={index}
           name={bucket.name}
-          spend={bucket.spend}
+          totalSpend={bucket.totalSpend}
           limit={bucket.limit}
           data-testid={`bucket-${index}`}
         />

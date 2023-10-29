@@ -1,32 +1,36 @@
 export interface iBucketSummary {
   name: string;
   limit: number;
-  spend: number;
+  totalSpend: number;
 }
-const BucketSummary = ({ name, spend, limit }: iBucketSummary): JSX.Element => {
-  const fill = 20;
-  const available = limit - spend;
-  const fillStatus = ((available + fill) / limit) * 100;
+const BucketSummary = ({
+  name,
+  totalSpend,
+  limit,
+}: iBucketSummary): JSX.Element => {
+  const available = Math.round((limit - totalSpend) * 100) / 100;
   const bucketStatus = (available / limit) * 100;
 
   return (
-    <div className={"w-full flex flex-col justify-between mb-2 "}>
-      <div className={"flex flex-row justify-between"}>
+    <div className={"w-full flex flex-col mb-2 items-stretch px-2"}>
+      <div className={"w-full flex flex-row justify-between"}>
         <div className={"font-semibold"}>{name}</div>
-        <div className={"flex flex-col"}>
-          <p className={"text-sm font-semibold"}>{available}</p>
-          <p className={"text-xs font-light text-gray-400"}>{limit}</p>
+        <div className={"flex flex-col items-end"}>
+          <p
+            className={`text-sm font-semibold ${
+              available < 0 ? "text-red-500" : ""
+            }`}
+          >
+            {available}
+          </p>
+          <p className={"text-sm font-light text-gray-400"}>{limit}</p>
         </div>
       </div>
 
       <div className={" w-full bg-gray-200 h-2"}>
         <div
-          className={"bg-green-400 h-2 top-0 z-10"}
-          style={{ width: `${fillStatus}%` }}
-        />
-        <div
           className={"bg-blue-600 h-2 relative bottom-2 z-20"}
-          style={{ width: `${bucketStatus}%` }}
+          style={{ width: `${bucketStatus > 0 ? bucketStatus : 0}%` }}
         />
       </div>
     </div>
