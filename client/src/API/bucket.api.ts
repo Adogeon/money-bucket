@@ -11,9 +11,11 @@ export const getMonthlyBucketSummary = async (
   user: string | null,
   month: Date = new Date()
 ): Promise<iBucket[]> => {
+  const monthStr =
+    `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
   try {
     const getBucketSummaryResponse = await createRequest(
-      `/bucket/${month}`,
+      `/api/bucket/summary/${monthStr}`,
       user
     );
     const bucketSummaries = await handleResponse(getBucketSummaryResponse);

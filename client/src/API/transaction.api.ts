@@ -24,10 +24,12 @@ interface iTransactionView {
   currency: string;
   type: string;
   date: Date;
-  bucket: {
-    name: string;
-    id: string;
-  };
+  bucket: [
+    {
+      name: string;
+      id: string;
+    }
+  ];
 }
 
 type iMonthTransactions = Array<iTransactionView>;
@@ -37,7 +39,6 @@ export const getMonthTransactions = async (
 ): Promise<iMonthTransactions> => {
   const monthyear =
     `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
-
   try {
     const fetchResponse = await createRequest(
       `api/transaction/${monthyear}`,
