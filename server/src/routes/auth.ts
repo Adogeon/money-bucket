@@ -48,7 +48,6 @@ router.post("/login", (async (
         },
         serverSecret()
       );
-      console.log(token);
       res.status(200).json(token);
     } else {
       res.sendStatus(401);

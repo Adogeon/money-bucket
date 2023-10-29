@@ -68,8 +68,8 @@ router.post("/multi", (async (
 router.get("/:monthyear", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    const reqMonth = Number(req.params.monthyear.slice(0, 2));
-    const reqYear = Number(req.params.monthyear.slice(2));
+    const reqMonth = parseInt(req.params.monthyear.slice(0, 2));
+    const reqYear = parseInt(req.params.monthyear.slice(2));
     const transactionDocs = await Transaction.aggregate([
       { $match: { user: userId } },
       {
@@ -106,8 +106,6 @@ router.get("/:monthyear", (async (req, res, next) => {
         },
       },
     ]);
-    if (transactionDocs.length === 0)
-      throw new Error("Something is wrong the document");
     res.status(200).json(transactionDocs);
   } catch (error) {
     next(error);
