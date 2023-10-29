@@ -69,6 +69,11 @@ router.get("/summary/:month", (async (req, res, next) => {
           count: 1,
         },
       },
+      {
+        $sort: {
+          name: 1,
+        },
+      },
     ]);
     res.status(200).json(bucketSummariesDocs);
   } catch (error) {
