@@ -1,6 +1,13 @@
 export interface Transaction {
-    date: string,
-    summary: string,
-    bucket: string,
-    amount: PaymentCurrencyAmount
+  amount: number;
+  summary: string;
+  currency: string;
+  type: string;
+  date: Date;
+  bucket: [
+    {
+      name: string;
+      id: string;
+    }
+  ];
 }
