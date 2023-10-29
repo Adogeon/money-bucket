@@ -35,23 +35,18 @@ export function useApi<T extends apiFunc<any>>(
       .then((res: any) => {
         console.log("response", res);
         setResponse({
-          ...response,
+          error: null,
           data: res,
+          isFetching: false,
           isSuccess: true,
         });
       })
       .catch((err: any) => {
         setResponse({
-          ...response,
+          data: null,
           isSuccess: false,
-          error: err,
-        });
-      })
-      .finally(() => {
-        console.log("Finally");
-        setResponse({
-          ...response,
           isFetching: false,
+          error: err,
         });
       });
   };
