@@ -11,10 +11,12 @@ interface userBucketProps {
   month: Date;
 }
 function UserBucket({ month }: userBucketProps): JSX.Element {
-  const [getBucketsResponse, APIGetBuckets] = useApi(getMonthlyBucketSummary);
+  const [getBucketsResponse, APIGetBuckets, ignore] = useApi(
+    getMonthlyBucketSummary
+  );
   useEffect(() => {
-    console.log("getBucket", getBucketsResponse);
     APIGetBuckets(month);
+    () => (ignore.current = true);
   }, [month]);
   return (
     <BucketListView
@@ -34,11 +36,12 @@ function MonthlySpendingTable({
 }: MonthlySpendingTableProps): JSX.Element {
   const [monthTransations, setMonthTransactions] = useState(initialData);
   const [month, setMonth] = useState(inititalMonth);
-  const [getMonthResponse, APIGetMonthTransactions] =
+  const [getMonthResponse, APIGetMonthTransactions, ignore] =
     useApi(getMonthTransactions);
+
   useEffect(() => {
     APIGetMonthTransactions(month);
-    console.log("Transactions", getMonthResponse);
+    () => (ignore.current = true);
   }, [month]);
 
   return (

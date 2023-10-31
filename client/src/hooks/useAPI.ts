@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import type { apiFunc } from "../API";
 
@@ -14,7 +14,7 @@ export type callApiFnc<T extends (...args: any) => any> = (
 
 export function useApi<T extends apiFunc<any>>(
   apiFunction: T
-): [iResponse, callApiFnc<T>] {
+): [iResponse, callApiFnc<T>, React.MutableRefObject<boolean>] {
   const [response, setResponse] = useState({
     data: null,
     isFetching: false,
@@ -22,34 +22,31 @@ export function useApi<T extends apiFunc<any>>(
     isSuccess: false,
   });
   const { user } = useAuth();
+  const ignoreRef = useRef(false);
 
   const fetchMethod = (...args: any) => {
-    setResponse({
-      data: null,
-      isFetching: true,
-      error: null,
-      isSuccess: false,
-    });
-    console.log("APIFunc", apiFunction);
     apiFunction(user, ...args)
       .then((res: any) => {
-        console.log("response", res);
-        setResponse({
-          error: null,
-          data: res,
-          isFetching: false,
-          isSuccess: true,
-        });
+        if (!ignoreRef.current) {
+          setResponse({
+            error: null,
+            data: res,
+            isFetching: false,
+            isSuccess: true,
+          });
+        }
       })
       .catch((err: any) => {
-        setResponse({
-          data: null,
-          isSuccess: false,
-          isFetching: false,
-          error: err,
-        });
+        if (!ignoreRef.current) {
+          setResponse({
+            data: null,
+            isSuccess: false,
+            isFetching: false,
+            error: err,
+          });
+        }
       });
   };
 
-  return [response, fetchMethod];
+  return [response, fetchMethod, ignoreRef];
 }
