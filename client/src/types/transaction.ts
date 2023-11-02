@@ -4,10 +4,8 @@ export interface Transaction {
   currency: string;
   type: string;
   date: Date;
-  bucket: [
-    {
-      name: string;
-      id: string;
-    }
-  ];
+  bucket: {
+    name: string;
+    id: string;
+  };
 }

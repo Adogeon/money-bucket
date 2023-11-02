@@ -26,6 +26,17 @@ export const getMonthlyBucketSummary = async (
   }
 };
 
+export const getUserBucketList = async (user: string | null): Promise<any> => {
+  try {
+    const fetchResponse = await createRequest(`/api/bucket/simple`, user);
+    const bucketList = await handleResponse(fetchResponse);
+    return bucketList;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const getBucketDetail = async (
   auth: string | null,
   bucketName: string
