@@ -11,6 +11,7 @@ import { ProvideAuth, useAuth } from "./context/AuthContext";
 import Appbar from "./components/Appbar/Appbar";
 
 import Home from "./container/Home";
+import AddPage from "./container/Transaction/addNew";
 
 const Layout = (): JSX.Element => {
   return (
@@ -34,10 +35,10 @@ const Layout = (): JSX.Element => {
 const AuthContainer = ({ children }: { children: ReactNode }): JSX.Element => {
   const { isCached, loadCache } = useAuth();
   useEffect(() => {
-    if (isCached) {
+    if (isCached()) {
       loadCache();
     }
-  }, [isCached]);
+  }, []);
   return <React.Fragment>{children}</React.Fragment>;
 };
 
@@ -51,21 +52,14 @@ const Transactions = (): JSX.Element => (
   <div> List of Transactions with Month selector(Search ?)</div>
 );
 const Transaction = (): JSX.Element => <div> Detail of a Transaction</div>;
-const AddTransaction = (): JSX.Element => (
-  <div> Page to add a new transaction</div>
-);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route path="bucket" element={<Buckets />}>
-        <Route path=":bucketId" element={<Bucket />} />
-        <Route path="new" element={<AddBucket />} />
-      </Route>
-      <Route path="transaction" element={<Transactions />}>
-        <Route path=":transactionId" element={<Transaction />} />
-        <Route path="new" element={<AddTransaction />} />
-      </Route>
+      <Route path="bucket/new" element={<AddBucket />} />
+      <Route path="bucket/:bucketId" element={<Bucket />} />
+      <Route path="transaction/new" element={<AddPage />} />
+      <Route path="transaction/:transactionId" element={<Transaction />} />
       <Route index element={<Home />} />
     </Route>
   )

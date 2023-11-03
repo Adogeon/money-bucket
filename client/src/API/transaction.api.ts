@@ -6,7 +6,7 @@ export const addTransaction = async (
 ): Promise<any> => {
   try {
     const fetchResponse = await createRequest(
-      `api/transation`,
+      "/api/transaction",
       user,
       "POST",
       newTransaction

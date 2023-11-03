@@ -81,6 +81,21 @@ router.get("/summary/:month", (async (req, res, next) => {
   }
 }) as RequestHandler);
 
+router.get("/simple", async (req, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const bukcetList = await Bucket.aggregate([
+      { $match: { user: userId } },
+      { $project: { name: 1, _id: 1 } },
+      { $sort: { name: 1 } },
+    ]);
+
+    res.status(200).json(bukcetList);
+  } catch (error) {
+    next(error);
+  }
+});
+
 /**
  * @route GET /bucket/:name
  * for gettting the bucket

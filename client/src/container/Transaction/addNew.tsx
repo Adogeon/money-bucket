@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import type { FormEvent, ReactEventHandler, ChangeEvent } from "react";
 import type { Transaction } from "../../types/transaction";
 import { getUserBucketList } from "../../API/bucket.api";
+import { addTransaction } from "../../API/transaction.api";
 import { useApi } from "../../hooks/useAPI";
+import { useNavigate } from "react-router-dom";
 
 interface inputTransaction extends Omit<Transaction, "bucket"> {
   bucket: string;
@@ -10,7 +12,7 @@ interface inputTransaction extends Omit<Transaction, "bucket"> {
 
 interface iBucket {
   name: string;
-  id: string;
+  _id: string;
 }
 interface iAddFormViewProps {
   handleSubmit: (e: FormEvent<iAddForm>) => void;
@@ -68,7 +70,7 @@ const AddFormView = ({
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
         >
           {buckets.map((bucket, index) => (
-            <option key={`bucket-${index}`} value={bucket.id}>
+            <option key={`bucket-${index}`} value={bucket._id}>
               {bucket.name}
             </option>
           ))}
@@ -103,16 +105,25 @@ interface iAddForm extends HTMLFormElement {
   readonly elements: iAddFormElements;
 }
 interface iAddFormProps {
-  submitNewTransaction: (transaction: inputTransaction) => void;
+  doneCb: () => void;
 }
-const AddForm = ({ submitNewTransaction }: iAddFormProps) => {
+const AddForm = ({ doneCb }: iAddFormProps) => {
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [bucketList, getBucketList] = useApi(getUserBucketList);
+  const [addNewResponse, addNewTransaction] = useApi(addTransaction);
 
   useEffect(() => {
     getBucketList();
   }, []);
+
+  useEffect(() => {
+    if (addNewResponse.isSuccess) {
+      doneCb();
+    } else {
+      console.log(addNewResponse.error);
+    }
+  });
 
   const handleDateChange = (e: ChangeEvent<HTMLInputElement>) =>
     setDate(e.target.value);
@@ -133,7 +144,7 @@ const AddForm = ({ submitNewTransaction }: iAddFormProps) => {
       currency: "USD",
       type: "CR",
     };
-    submitNewTransaction(transaction);
+    addNewTransaction(transaction);
   };
 
   return (
@@ -145,13 +156,30 @@ const AddForm = ({ submitNewTransaction }: iAddFormProps) => {
           handleSubmit={handleSubmit}
           date={date}
           handleDateChange={handleDateChange}
-          buckets={bucketList.data}
+          buckets={bucketList.data ?? []}
         />
       )}
     </>
   );
 };
 
-const AddPage = () => {};
+const AddPage = () => {
+  const navigate = useNavigate();
+
+  const handleDone = () => {
+    navigate("/", { replace: true });
+  };
+
+  return (
+    <div className="flex items-center h-screen w-full">
+      <div className="w-full bg-white rounded shadow-sm p-8 m-4 md:max-w-sm md:mx-auto">
+        <h1 className="block w-full tex-center text-2xl font-bold text-grey-darkest mb-6">
+          Add a Transaction
+        </h1>
+        <AddForm doneCb={handleDone} />
+      </div>
+    </div>
+  );
+};
 
 export default AddPage;

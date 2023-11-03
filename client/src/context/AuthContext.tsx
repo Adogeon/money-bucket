@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from "react";
+import { useState, useContext, createContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { fetchUserLoginToken, fetchUserRegisterToken } from "../API/auth.api";
 
@@ -9,7 +9,7 @@ interface iUseAuth {
   isLogin: boolean;
   errors: string[];
   isLoading: boolean;
-  isCached: boolean;
+  isCached: () => boolean;
   signin: (username: string, password: string) => void;
   register: (username: string, password: string, email: string) => void;
   loadCache: () => void;
@@ -19,9 +19,7 @@ const useProvideAuth = (): iUseAuth => {
   const [user, setUser] = useState<string | null>(null);
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCached, setIsCached] = useState(
-    localStorage.getItem("user") !== null
-  );
+  const isCached = () => localStorage.getItem("user") !== null;
   const [isLogin, setIsLogin] = useState(false);
 
   function signin(username: string, password: string): void {
@@ -34,7 +32,6 @@ const useProvideAuth = (): iUseAuth => {
           .then((user) => {
             setUser(user);
             localStorage.setItem("user", user);
-            setIsCached(true);
             setIsLogin(true);
           })
           .catch((err) => {
@@ -57,7 +54,6 @@ const useProvideAuth = (): iUseAuth => {
           (user) => {
             setUser(user);
             localStorage.setItem("user", user);
-            setIsCached(true);
             setIsLogin(true);
           },
           (err) => {
@@ -77,6 +73,10 @@ const useProvideAuth = (): iUseAuth => {
     setUser(localStorage.getItem("user"));
     setIsLogin(true);
   }
+
+  useEffect(() => {
+    console.log("User change:", user);
+  }, [user]);
 
   return {
     user,
