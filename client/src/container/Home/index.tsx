@@ -71,11 +71,24 @@ function MonthSelector({ initialMonth }: MonthSelectorProps): JSX.Element {
     month: "long",
     year: "numeric",
   });
+
+  const goBackAMonth = () => {
+    const newDate = new Date(initialMonth);
+    newDate.setMonth(newDate.getMonth() - 1);
+    return newDate;
+  };
+
+  const goForwardAMonth = () => {
+    const newDate = new Date(initialMonth);
+    newDate.setMonth(newDate.getMonth() + 1);
+    return newDate;
+  };
+
   return (
     <div className="w-full flex justify-center">
-      <button>{"<"}</button>
+      <button onClick={goBackAMonth}>{"<"}</button>
       <div>{displayMonth}</div>
-      <button>{">"}</button>
+    <button onClick={goForwardAMonth}>{">"}</button>
     </div>
   );
 }
