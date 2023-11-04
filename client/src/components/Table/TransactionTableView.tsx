@@ -1,42 +1,62 @@
+import type { ReactNode } from "react";
 import type { Transaction } from "../../types/transaction";
-import TransactionRow from "./TransactionRow";
+import { TransactionLinkRow, TransactionRow } from "./TransactionRow";
 
-interface TransactionTableViewInterface {
-  transactions: Transaction[];
-  isLoading: boolean;
+interface TableHeaderProps {
+  headers: string[];
+  children: ReactNode;
 }
-
-const TransactionTableView = ({
-  transactions,
-  isLoading,
-}: TransactionTableViewInterface): JSX.Element => {
-  return isLoading ? (
-    <div>Loading table ...</div>
-  ) : (
-    <table className="w-full text-center shadow-md">
+const TableHeader = ({ headers, children }: TableHeaderProps) => {
+  return (
+    <table className="w-full text-center shadow-md spending-table">
       <thead className="border-b bg-gray-800">
         <tr>
-          <th scope="col" className="text-sm font-medium text-white px-6 py-4">
-            Date
-          </th>
-          <th scope="col" className="text-sm font-medium text-white px-6 py-4">
-            Summary
-          </th>
-          <th scope="col" className="text-sm font-medium text-white px-6 py-4">
-            Bucket
-          </th>
-          <th scope="col" className="text-sm font-medium text-white px-6 py-4">
-            Amount
-          </th>
+          {headers.map((header, index) => (
+            <th
+              scope="col"
+              className="text-sm font-medium text-white px-6 py-4"
+              key={`header-${index}`}
+            >
+              {header}
+            </th>
+          ))}
         </tr>
       </thead>
-      <tbody>
-        {transactions.map((transaction, index: number) => (
-          <TransactionRow transaction={transaction} key={`row-${index}`} />
-        ))}
-      </tbody>
+      <tbody>{children}</tbody>
     </table>
   );
 };
 
-export default TransactionTableView;
+interface TransactionTableViewProps {
+  transactions: Transaction[] | null;
+}
+export const TransactionTableView = ({
+  transactions,
+}: TransactionTableViewProps): JSX.Element => {
+  return (
+    <TableHeader headers={["Date", "Summary", "Bucket", "Amount"]}>
+      {transactions?.map((transaction, index: number) => (
+        <TransactionRow transaction={transaction} key={`row-${index}`} />
+      ))}
+    </TableHeader>
+  );
+};
+
+interface ShortTransactionTableViewProps {
+  data: Omit<Transaction, "bucket">[];
+}
+
+export const ShortTransactionTableView = ({
+  data,
+}: ShortTransactionTableViewProps) => {
+  return (
+    <TableHeader headers={["Date", "Summary", "Amount"]}>
+      {data.map((transaction) => (
+        <TransactionLinkRow
+          data={transaction}
+          key={`link-row-${transaction.id}`}
+        />
+      ))}
+    </TableHeader>
+  );
+};

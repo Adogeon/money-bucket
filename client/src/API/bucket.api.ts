@@ -1,16 +1,10 @@
 import { createRequest, handleResponse } from "./factory.api";
-
-interface iBucket {
-  id: string;
-  name: string;
-  currency: string;
-  limit: number;
-}
+import type { iBucketSummary } from "../components/Bucket/BucketSummary";
 
 export const getMonthlyBucketSummary = async (
   user: string | null,
   month: Date = new Date()
-): Promise<iBucket[]> => {
+): Promise<iBucketSummary[]> => {
   const monthStr =
     `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
   try {

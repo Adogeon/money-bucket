@@ -2,19 +2,26 @@ import { useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import type { apiFunc } from "../API";
 
-interface iResponse {
-  data: any | null;
+interface iResponse<T> {
+  data: T | null;
   isFetching: boolean;
   error: Error | null;
   isSuccess: boolean;
 }
-export type callApiFnc<T extends (...args: any) => any> = (
+export type callApiFnc<T extends (...args: any) => Promise<any>> = (
   ...args: Parameters<T> extends [infer A, ...infer R] ? R : never
 ) => void;
+type returnApiFnc<T extends (...args: any) => Promise<any>> = Awaited<
+  ReturnType<T>
+>;
 
 export function useApi<T extends apiFunc<any>>(
   apiFunction: T
-): [iResponse, callApiFnc<T>, React.MutableRefObject<boolean>] {
+): [
+  iResponse<returnApiFnc<T>>,
+  callApiFnc<T>,
+  React.MutableRefObject<boolean>
+] {
   const [response, setResponse] = useState({
     data: null,
     isFetching: false,

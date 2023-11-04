@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import TransactionTableView from "../../components/Table/TransactionTableView";
+import { TransactionTableView } from "../../components/Table/TransactionTableView";
 import type { Transaction } from "../../types/transaction";
 import { useAuth } from "../../context/AuthContext";
 import { useApi } from "../../hooks/useAPI";
@@ -52,10 +52,11 @@ function MonthlySpendingTable({
           <UserBucket month={month} />
         </div>
         <div className="lg:w-2/3">
-          <TransactionTableView
-            transactions={getMonthResponse.data ?? []}
-            isLoading={getMonthResponse.isFetching}
-          />
+          {getMonthResponse.isFetching ? (
+            <div>Loading...</div>
+          ) : (
+            <TransactionTableView transactions={getMonthResponse.data ?? []} />
+          )}
         </div>
       </div>
     </div>
@@ -105,12 +106,10 @@ interface HomeControllerProps {
   renderFc: (initialData: HomePresentationProps) => JSX.Element;
 }
 function HomeContainer({ renderFc }: HomeControllerProps): JSX.Element {
-  const { user, signin, isLoading, isLogin, isCached, loadCache } = useAuth();
-
-  console.log("Jello");
+  const { signin, isLoading, isLogin, isCached, loadCache } = useAuth();
 
   useEffect(() => {
-    if (isCached) {
+    if (isCached()) {
       loadCache();
     } else {
       signin("thomas", "123456");

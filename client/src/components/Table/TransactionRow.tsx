@@ -1,11 +1,12 @@
+import { Link } from "react-router-dom";
 import type { Transaction } from "../../types/transaction";
 
 interface TransactionRowProps {
   transaction: Transaction;
 }
-
-const TransactionRow = ({ transaction }: TransactionRowProps): JSX.Element => {
-  console.log(transaction);
+export const TransactionRow = ({
+  transaction,
+}: TransactionRowProps): JSX.Element => {
   return (
     <tr className="bg-white border-b">
       <td className="px-6 py-4 font-medium text-sm text-gray-500">
@@ -15,7 +16,9 @@ const TransactionRow = ({ transaction }: TransactionRowProps): JSX.Element => {
         {`${transaction.summary}`}
       </td>
       <td className="px-6 py-4 font-medium text-sm text-gray-500">
-        {transaction.bucket[0]?.name ?? ""}
+        <Link to={`/bucket/${transaction.bucket?.id}`}>
+          {transaction.bucket?.name ?? ""}
+        </Link>
       </td>
       <td className="px-6 py-4 font-medium text-sm text-gray-500">
         {`${transaction.amount} ${transaction.currency}`}
@@ -24,4 +27,23 @@ const TransactionRow = ({ transaction }: TransactionRowProps): JSX.Element => {
   );
 };
 
-export default TransactionRow;
+interface TransactionLinkRowProps {
+  data: Omit<Transaction, "bucket">;
+}
+export const TransactionLinkRow = ({ data }: TransactionLinkRowProps) => {
+  return (
+    <tr className="bg-white border-b">
+      <Link to={`/transaction/${data.id}`}>
+        <td className="px-6 py-4 font-medium text-sm text-gray-500">
+          {`${new Date(data.date).toLocaleDateString()}`}
+        </td>
+        <td className="px-6 py-4 font-medium text-sm text-left text-gray-500">
+          {`${data.summary}`}
+        </td>
+        <td className="px-6 py-4 font-medium text-sm text-gray-500">
+          {`${data.amount} ${data.currency}`}
+        </td>
+      </Link>
+    </tr>
+  );
+};
