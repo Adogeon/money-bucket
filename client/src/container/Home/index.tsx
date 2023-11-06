@@ -6,6 +6,7 @@ import { useApi } from "../../hooks/useAPI";
 import { getMonthTransactions } from "../../API/transaction.api";
 import { getMonthlyBucketSummary } from "../../API/bucket.api";
 import BucketListView from "../../components/Bucket/BucketListView";
+import MonthPicker from "../../components/Table/MonthPicker";
 
 interface userBucketProps {
   month: Date;
@@ -34,7 +35,6 @@ function MonthlySpendingTable({
   initialData,
   inititalMonth,
 }: MonthlySpendingTableProps): JSX.Element {
-  const [monthTransations, setMonthTransactions] = useState(initialData);
   const [month, setMonth] = useState(inititalMonth);
   const [getMonthResponse, APIGetMonthTransactions, ignore] =
     useApi(getMonthTransactions);
@@ -44,9 +44,13 @@ function MonthlySpendingTable({
     () => (ignore.current = true);
   }, [month]);
 
+  const handleMonthChange = (newMonth: Date) => {
+    setMonth(newMonth);
+  };
+
   return (
     <div className="w-full flex flex-col justify-center">
-      <MonthSelector initialMonth={month} />
+      <MonthPicker month={month} onMonthChange={handleMonthChange} />
       <div className="flex flex-col lg:flex-row justify-evenly">
         <div className="lg:w-1/4">
           <UserBucket month={month} />
@@ -59,36 +63,6 @@ function MonthlySpendingTable({
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-interface MonthSelectorProps {
-  initialMonth: Date;
-}
-function MonthSelector({ initialMonth }: MonthSelectorProps): JSX.Element {
-  const displayMonth = initialMonth.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
-
-  const goBackAMonth = () => {
-    const newDate = new Date(initialMonth);
-    newDate.setMonth(newDate.getMonth() - 1);
-    return newDate;
-  };
-
-  const goForwardAMonth = () => {
-    const newDate = new Date(initialMonth);
-    newDate.setMonth(newDate.getMonth() + 1);
-    return newDate;
-  };
-
-  return (
-    <div className="w-full flex justify-center">
-      <button onClick={goBackAMonth}>{"<"}</button>
-      <div>{displayMonth}</div>
-    <button onClick={goForwardAMonth}>{">"}</button>
     </div>
   );
 }

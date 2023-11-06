@@ -1,26 +1,33 @@
 import { useParams } from "react-router-dom";
-import ShortTransactionTableView from "../../components/Table/TransactionTableView";
+import { ShortTransactionTableView } from "../../components/Table/TransactionTableView";
 import { useApi } from "../../hooks/useAPI";
-import { getBucketDetail } from "../../API/bucket.api";
-import { useEffect } from "react";
+import { getBucketDetail, getBucketMonthSpending } from "../../API/bucket.api";
+import { useState, useEffect } from "react";
+import MonthPicker from "../../components/Table/MonthPicker";
 
-const BucketSpendingTable = () => {
+interface BucketSpendingTableProps {
+  bucket: string;
+}
+const BucketSpendingTable = ({ bucket }: BucketSpendingTableProps) => {
   const [month, setMonth] = useState(new Date("12/30/2022"));
   const [response, loadBucketMonthSpending, ignore] = useApi(
     getBucketMonthSpending
   );
 
   useEffect(() => {
-    loadBucketMonthSpending(month, bucketId);
-
+    loadBucketMonthSpending(bucket, month);
     () => {
       ignore.current = true;
     };
   }, [month]);
 
+  const handleMonthChange = (newMonth: Date) => {
+    setMonth(newMonth);
+  };
+
   return (
     <div>
-      <MonthSelector initialMonth={month} />
+      <MonthPicker month={month} onMonthChange={handleMonthChange} />
       {response.isFetching ? (
         <div>Loading ...</div>
       ) : (
@@ -31,12 +38,12 @@ const BucketSpendingTable = () => {
 };
 
 const BucketPage = () => {
-  const bucketId = useParams(bucketId);
+  const { bucketId } = useParams();
   const [{ data, isFetching }, loadBucketDetail, ignore] =
     useApi(getBucketDetail);
 
   useEffect(() => {
-    loadBucketDetail(bucketId);
+    loadBucketDetail(bucketId ? bucketId : "");
     () => {
       ignore.current = true;
     };
@@ -60,7 +67,7 @@ const BucketPage = () => {
             </p>
           </section>
           <section>
-            <BucketSpendingTable />
+            <BucketSpendingTable bucket={bucketId ? bucketId : ""} />
           </section>
         </div>
       )}
