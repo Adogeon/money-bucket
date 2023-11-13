@@ -12,6 +12,9 @@ import Appbar from "./components/Appbar/Appbar";
 
 import Home from "./container/Home";
 import AddPage from "./container/Transaction/addNew";
+import BucketPage from "./container/Bucket";
+import TransactionPage from "./container/Transaction";
+import TransactionEditPage from "./container/Transaction/edit";
 
 const Layout = (): JSX.Element => {
   return (
@@ -57,9 +60,13 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="bucket/new" element={<AddBucket />} />
-      <Route path="bucket/:bucketId" element={<Bucket />} />
+      <Route path="bucket/:bucketId" element={<BucketPage />} />
       <Route path="transaction/new" element={<AddPage />} />
-      <Route path="transaction/:transactionId" element={<Transaction />} />
+      <Route path="transaction/:transactionId" element={<TransactionPage />} />
+      <Route
+        path="transaction/edit/:transactionId"
+        element={<TransactionEditPage />}
+      />
       <Route index element={<Home />} />
     </Route>
   )

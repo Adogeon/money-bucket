@@ -1,5 +1,5 @@
 import { createRequest, handleResponse } from "./factory.api";
-import type { Transaction } from "../types/transaction";
+import type { Transaction, iEditTransactionInput } from "../types/transaction";
 
 export const addTransaction = async (
   user: string | null,
@@ -28,7 +28,7 @@ export const getMonthTransactions = async (
     `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
   try {
     const fetchResponse = await createRequest(
-      `api/transactions/${monthyear}`,
+      `/api/transaction/m/${monthyear}`,
       user
     );
     const result = await handleResponse(fetchResponse);
@@ -45,8 +45,46 @@ export const getTransactionDetail = async (
 ): Promise<Transaction> => {
   try {
     const fetchResponse = await createRequest(
-      `api/transaction/${transactionId}`,
+      `/api/transaction/${transactionId}`,
       user
+    );
+    const result = await handleResponse(fetchResponse);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const postTransactionEdit = async (
+  user: string | null,
+  transactionId: string,
+  updateTransaction: Partial<iEditTransactionInput>
+): Promise<any> => {
+  try {
+    const fetchResponse = await createRequest(
+      `/api/transaction/${transactionId}`,
+      user,
+      "POST",
+      updateTransaction
+    );
+    const result = await handleResponse(fetchResponse);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const deleteTransaction = async (
+  user: string | null,
+  transactionId: string
+): Promise<any> => {
+  try {
+    const fetchResponse = await createRequest(
+      `/api/transaction/${transactionId}`,
+      user,
+      "DELETE"
     );
     const result = await handleResponse(fetchResponse);
     return result;

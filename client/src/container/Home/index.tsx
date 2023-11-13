@@ -8,6 +8,7 @@ import { getMonthlyBucketSummary } from "../../API/bucket.api";
 import BucketListView from "../../components/Bucket/BucketListView";
 import MonthPicker from "../../components/Table/MonthPicker";
 
+
 interface userBucketProps {
   month: Date;
 }
@@ -125,7 +126,6 @@ export default function Home(): JSX.Element {
   return (
     <HomeContainer
       renderFc={(data) => {
-        console.log("Hi");
         return (
           <HomePresentation
             monthlySpending={data.monthlySpending}

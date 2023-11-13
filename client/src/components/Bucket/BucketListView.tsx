@@ -16,9 +16,7 @@ const BucketListView = ({
       {bucketList?.map((bucket, index) => (
         <BucketSummary
           key={index}
-          name={bucket.name}
-          totalSpend={bucket.totalSpend}
-          limit={bucket.limit}
+          bucket={bucket}
           data-testid={`bucket-${index}`}
         />
       )) ?? <div>No Bucket here</div>}

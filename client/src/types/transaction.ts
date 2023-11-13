@@ -10,3 +10,8 @@ export interface Transaction {
     id: string;
   };
 }
+
+export interface iEditTransactionInput
+  extends Omit<Transaction, "user" | "bucket"> {
+  bucket: string;
+}

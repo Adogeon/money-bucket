@@ -39,23 +39,28 @@ const BucketSpendingTable = ({ bucket }: BucketSpendingTableProps) => {
 
 const BucketPage = () => {
   const { bucketId } = useParams();
+  console.log(bucketId);
   const [{ data, isFetching }, loadBucketDetail, ignore] =
     useApi(getBucketDetail);
+
+  console.log(isFetching);
 
   useEffect(() => {
     loadBucketDetail(bucketId ? bucketId : "");
     () => {
       ignore.current = true;
     };
-  }, [bucketId]);
+  }, []);
 
   return (
     <>
       {isFetching ? (
         <div>Loading ... </div>
       ) : (
-        <div>
-          <h1>{data.name}</h1>
+        <div className="mx-auto container">
+          <h1 className="text-center text-2xl font-extrabold text-gray-800">
+            {data.name}
+          </h1>
           <section>
             <p>
               <em>Spending: </em>

@@ -24,7 +24,7 @@ export function useApi<T extends apiFunc<any>>(
 ] {
   const [response, setResponse] = useState({
     data: null,
-    isFetching: false,
+    isFetching: true,
     error: null,
     isSuccess: false,
   });
@@ -32,6 +32,12 @@ export function useApi<T extends apiFunc<any>>(
   const ignoreRef = useRef(false);
 
   const fetchMethod = (...args: any) => {
+    setResponse({
+      error: null,
+      data: null,
+      isFetching: true,
+      isSuccess: false,
+    });
     apiFunction(user, ...args)
       .then((res: any) => {
         if (!ignoreRef.current) {

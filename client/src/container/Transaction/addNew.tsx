@@ -6,10 +6,9 @@ import { addTransaction } from "../../API/transaction.api";
 import { useApi } from "../../hooks/useAPI";
 import { useNavigate } from "react-router-dom";
 
-interface inputTransaction extends Omit<Transaction, "bucket"> {
+interface inputTransaction extends Partial<Omit<Transaction, "bucket">> {
   bucket: string;
 }
-
 interface iBucket {
   name: string;
   _id: string;
@@ -19,14 +18,16 @@ interface iAddFormViewProps {
   date: string;
   handleDateChange: ReactEventHandler;
   buckets: Array<iBucket>;
+  value?: Transaction;
 }
-
-const AddFormView = ({
+export const AddFormView = ({
   handleSubmit,
   date,
   handleDateChange,
   buckets,
+  value,
 }: iAddFormViewProps) => {
+  const navigate = useNavigate();
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex flex-col mb-4">
@@ -37,6 +38,7 @@ const AddFormView = ({
           name="spend-name"
           type="text"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50 "
+          defaultValue={value !== undefined ? value.summary : ""}
         />
       </div>
       <div className="flex flex-col mb-4">
@@ -47,6 +49,7 @@ const AddFormView = ({
           name="spend-amount"
           type="number"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
+          defaultValue={value !== undefined ? value.amount : 0}
         />
       </div>
       <div className="flex flex-col mb-4">
@@ -57,7 +60,11 @@ const AddFormView = ({
           name="spend-date"
           type="date"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
-          value={date}
+          value={
+            value !== undefined
+              ? new Date(value.date).toISOString().split("T")[0]
+              : date
+          }
           onChange={handleDateChange}
         />
       </div>
@@ -69,11 +76,25 @@ const AddFormView = ({
           name="spend-bucket"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
         >
-          {buckets.map((bucket, index) => (
-            <option key={`bucket-${index}`} value={bucket._id}>
-              {bucket.name}
-            </option>
-          ))}
+          {buckets.map((bucket, index) => {
+            if (value !== undefined && bucket._id === value.bucket.id) {
+              return (
+                <option
+                  key={`bucket-${index}`}
+                  value={bucket._id}
+                  selected={true}
+                >
+                  {bucket.name}
+                </option>
+              );
+            } else {
+              return (
+                <option key={`bucket-${index}`} value={bucket._id}>
+                  {bucket.name}
+                </option>
+              );
+            }
+          })}
         </select>
       </div>
       <div className="flex flex-col mb-4">
@@ -85,12 +106,22 @@ const AddFormView = ({
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
         />
       </div>
-      <button
-        type="submit"
-        className="block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto px-4 py-2 rounded"
-      >
-        Save
-      </button>
+      <div className="flex justify-around py-4">
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="block bg-red-400 hover:bg-red-600 text-white uppercase text-lg mx-auto px-4 py-2 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="block bg-green-400 hover:bg-green-600 text-white uppercase text-lg mx-auto px-4 py-2 rounded"
+        >
+          Save
+        </button>
+      </div>
     </form>
   );
 };

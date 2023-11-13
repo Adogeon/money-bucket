@@ -1,59 +1,97 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Transaction } from "../../types/transaction";
 import { useApi } from "../../hooks/useAPI";
-import { getTransactionDetail } from "../../API/transaction.api";
+import {
+  deleteTransaction,
+  getTransactionDetail,
+} from "../../API/transaction.api";
 
 interface TransactionDetailViewProps {
-  data: Transaction | null;
+  data: Transaction;
+  handleEdit: VoidFunction;
+  handleDelete: VoidFunction;
 }
-const TransactionDetailView = ({ data }: TransactionDetailViewProps) => {
+const TransactionDetailView = ({
+  data,
+  handleEdit,
+  handleDelete,
+}: TransactionDetailViewProps) => {
   return (
-    <div>
-      <h1>Transaction Detail</h1>
-      <p>
-        <em>Summary:</em>
-        <span>{data?.summary}</span>
-      </p>
-      <p>
-        <em>Amount:</em>
+    <div className=" mx-auto border-2 flex flex-col gap-y-4 max-w-sm items-center text-2xl">
+      <section>{data?.summary}</section>
+      <p className="flex flex-col text-7xl items-center font-mono font-semibold">
         <span>{data?.amount}</span>
-        <span>{data?.currency}</span>
+        <span className="text-3xl">{data?.currency}</span>
       </p>
       <p>
-        <em>Date:</em>
-        <span>
-          {data?.date.toLocaleString("default", {
-            dateStyle: "full",
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          })}
-        </span>
+        {new Date(data.date).toLocaleString("default", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
       </p>
+      <section className="flex justify-between px-4 py-2">
+        <button onClick={handleEdit}>Edit</button>
+        <button onClick={handleDelete}>Delete</button>
+      </section>
     </div>
   );
 };
 
+const TransactionPlaceHolder = {
+  id: "0000000",
+  type: "ERROR",
+  bucket: { name: "EROR BUCKET", id: "1111111" },
+  summary: "This transaction doesn't exist",
+  date: new Date(),
+  amount: 0,
+  currency: "NUY",
+};
+
 const TransactionPage = () => {
   const { transactionId } = useParams();
-  const [response, loadTransactionDetail, ignore] =
+  const [response, loadTransactionDetail, dataIgnore] =
     useApi(getTransactionDetail);
 
+  const [deleteResponse, sendDeleteTransaction] = useApi(deleteTransaction);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (!ignore.current) {
+    if (!dataIgnore.current) {
       loadTransactionDetail(transactionId ?? "");
     }
-    () => (ignore.current = true);
+    () => (dataIgnore.current = true);
   }, [transactionId]);
 
+  useEffect(() => {
+    if (deleteResponse.isSuccess) {
+      navigate(-1);
+    }
+  }, [deleteResponse]);
+
+  const handleEdit = () => {
+    navigate(`/transaction/edit/${transactionId}`);
+  };
+
+  const handleDelete = () => {
+    sendDeleteTransaction(transactionId ?? "");
+  };
+
   return (
-    <div>
-      {response.isFetching ? (
-        <div>Loading ... </div>
-      ) : (
-        <TransactionDetailView data={response.data} />
-      )}
+    <div className="flex items-center h-screen w-full">
+      <div className="w-full bg-white rounded shadow-sm p-8 m-4 md:max-w-sm md:mx-auto">
+        {response.isFetching ? (
+          <div>Loading ... </div>
+        ) : (
+          <TransactionDetailView
+            data={response.data ?? TransactionPlaceHolder}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        )}
+      </div>
     </div>
   );
 };

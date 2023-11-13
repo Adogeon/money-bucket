@@ -1,4 +1,5 @@
 import express from "express";
+import { SchemaTypes } from "mongoose";
 import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
@@ -60,12 +61,12 @@ router.post("/multi", (async (
 }) as RequestHandler);
 
 /**
- * @route GET /transaction/:month
+ * @route GET /transaction/m/:month
  * for getting detail about all transaction within a month
  *
  * return multiple transaction within a month
  */
-router.get("/:monthyear", (async (req, res, next) => {
+router.get("/m/:monthyear", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
     const reqMonth = parseInt(req.params.monthyear.slice(0, 2));
@@ -74,6 +75,7 @@ router.get("/:monthyear", (async (req, res, next) => {
       { $match: { user: userId } },
       {
         $addFields: {
+          id: "$_id",
           month: { $month: "$date" },
           year: { $year: "$date" },
         },
@@ -95,13 +97,19 @@ router.get("/:monthyear", (async (req, res, next) => {
           localField: "bucket",
           foreignField: "_id",
           as: "bucket",
-          pipeline: [{ $project: { name: 1, _id: 1 } }],
+          pipeline: [
+            { $addFields: { id: "$_id" } },
+            { $project: { name: 1, id: 1, _id: 0 } },
+          ],
         },
       },
+      { $unwind: { path: "$bucket" } },
       {
         $project: {
           month: 0,
           year: 0,
+          user: 0,
+          _id: 0,
           _v: 0,
         },
       },
@@ -129,7 +137,7 @@ router.get("/:id", (async (req, res, next) => {
     if (transactionDoc === null)
       throw new Error("Can't find the specific document ");
     const transactionJSON = transactionDoc.toJSON();
-    res.json(200).json(transactionJSON);
+    res.status(200).json(transactionJSON);
   } catch (error) {
     next(error);
   }
@@ -153,6 +161,45 @@ router.get("/bucket/:name", (async (req, res, next) => {
     const bucketJSON = bucketDoc.toJSON();
     bucketJSON.transactions = transactions;
     res.status(200).json(bucketJSON);
+  } catch (error) {
+    next(error);
+  }
+}) as RequestHandler);
+
+router.put("/:id", async (req, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const update = { ...req.body };
+    const updateTransaction = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, user: userId },
+      update,
+      { new: true, runValidators: true }
+    );
+    if (
+      updateTransaction === null ||
+      updateTransaction._id.toString() !== req.params.id
+    ) {
+      res.sendStatus(404);
+    } else {
+      res.status(200).json(updateTransaction);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", (async (req, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const transaction = await Transaction.findOneAndDelete({
+      _id: req.params.id,
+      user: userId,
+    });
+    if (transaction === null || transaction._id.toString() !== req.params.id) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(200);
+    }
   } catch (error) {
     next(error);
   }

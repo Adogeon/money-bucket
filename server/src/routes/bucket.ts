@@ -1,6 +1,6 @@
 import express from "express";
 import type { Request, Response, NextFunction, RequestHandler } from "express";
-
+import mongoose from "mongoose";
 import Bucket from "../models/bucket";
 import { getUserId } from "./utils";
 import Transaction from "../models/transaction";
@@ -62,6 +62,7 @@ router.get("/summary/:month", (async (req, res, next) => {
       {
         $project: {
           _id: 0,
+          id: "$detail._id",
           name: "$detail.name",
           currency: "$detail.defaultLimit.currency",
           limit: "$detail.defaultLimit.amount",
@@ -100,20 +101,61 @@ router.get("/simple", async (req, res, next) => {
  * @route GET /bucket/:name
  * for gettting the bucket
  */
-router.get("/:name", (async (req, res, next) => {
+router.get("/:bucketId", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
     const bucketDoc = await Bucket.findOne({
-      name: req.params.name,
+      _id: req.params.bucketId,
       user: userId,
     });
     if (bucketDoc === null)
-      throw new Error(`Can't find bucket with name ${req.params.name}`);
+      throw new Error(`Can't find bucket with id ${req.params.bucketId}`);
 
-    const transactions = await bucketDoc.populate("transactions");
     const bucketJSON = bucketDoc.toJSON();
-    bucketJSON.transactions = transactions;
     res.status(200).json(bucketJSON);
+  } catch (error) {
+    next(error);
+  }
+}) as RequestHandler);
+
+/**
+ * @route GET /bucket/:bucketId/m/:month
+ *
+ */
+router.get("/:bucketId/m/:month", (async (req, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const bucketId = new mongoose.Types.ObjectId(req.params.bucketId);
+    const reqMonth = Number(req.params.month.slice(0, 2));
+    const reqYear = Number(req.params.month.slice(2));
+    const transactionDocs = await Transaction.aggregate([
+      { $match: { user: userId, bucket: bucketId } },
+      {
+        $addFields: {
+          id: "$_id",
+          month: {
+            $month: "$date",
+          },
+          year: {
+            $year: "$date",
+          },
+        },
+      },
+      {
+        $match: {
+          month: reqMonth,
+          year: reqYear,
+        },
+      },
+      {
+        $project: {
+          bucket: 0,
+          _id: 0,
+          user: 0,
+        },
+      },
+    ]);
+    res.status(200).json(transactionDocs);
   } catch (error) {
     next(error);
   }

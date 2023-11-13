@@ -33,16 +33,12 @@ export const getUserBucketList = async (user: string | null): Promise<any> => {
 
 export const getBucketDetail = async (
   auth: string | null,
-  bucketName: string
+  bucketId: string
 ): Promise<any> => {
   try {
-    const fetchResponse = await fetch(`/api/bucket/${bucketName}`, {
-      headers: { Authorization: `Bearer ${auth}` },
-    });
-    if (fetchResponse.status !== 200) {
-      throw new Error(fetchResponse.statusText);
-    }
-    return await fetchResponse.json();
+    const fetchResponse = await createRequest(`/api/bucket/${bucketId}`, auth);
+    const result = await handleResponse(fetchResponse);
+    return result;
   } catch (error) {
     console.log(error);
     throw error;
@@ -58,7 +54,7 @@ export const getBucketMonthSpending = async (
     `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
   try {
     const fetchResponse = await createRequest(
-      `/api/${bucketId}/m/${querryMonth}`,
+      `/api/bucket/${bucketId}/m/${querryMonth}`,
       user
     );
     const result = await handleResponse(fetchResponse);
