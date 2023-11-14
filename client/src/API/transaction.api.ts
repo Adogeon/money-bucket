@@ -56,7 +56,7 @@ export const getTransactionDetail = async (
   }
 };
 
-export const postTransactionEdit = async (
+export const putTransactionEdit = async (
   user: string | null,
   transactionId: string,
   updateTransaction: Partial<iEditTransactionInput>
@@ -65,7 +65,7 @@ export const postTransactionEdit = async (
     const fetchResponse = await createRequest(
       `/api/transaction/${transactionId}`,
       user,
-      "POST",
+      "PUT",
       updateTransaction
     );
     const result = await handleResponse(fetchResponse);

@@ -25,7 +25,7 @@ const Layout = (): JSX.Element => {
             <h1>Nav bar go here</h1>
             <Appbar />
           </header>
-          <main>
+          <main className="bg-slate-300">
             <Outlet />
           </main>
           <footer>@ me 2023</footer>

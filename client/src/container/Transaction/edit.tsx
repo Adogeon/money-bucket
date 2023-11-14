@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getUserBucketList } from "../../API/bucket.api";
 import {
   getTransactionDetail,
-  postTransactionEdit,
+  putTransactionEdit,
 } from "../../API/transaction.api";
 import { AddFormView } from "./addNew";
 import type { iEditTransactionInput } from "../../types/transaction";
@@ -28,7 +28,7 @@ const EditForm = ({ doneCb, transactionId }: iEditFormProps) => {
   const [date, setDate] = useState(today);
   const [bucketList, getBucketList] = useApi(getUserBucketList);
   const [data, loadTransactionData] = useApi(getTransactionDetail);
-  const [updateResponse, updateTransaction] = useApi(postTransactionEdit);
+  const [updateResponse, updateTransaction] = useApi(putTransactionEdit);
 
   useEffect(() => {
     getBucketList();

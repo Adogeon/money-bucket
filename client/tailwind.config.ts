@@ -7,7 +7,14 @@ export default {
     "./src/components/**/*.{ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#164864",
+        secondary: "#427D9D",
+        neutral: "#9BBEC8",
+        info: "#DDF2FD",
+      },
+    },
   },
   plugins: [],
 } satisfies Config;

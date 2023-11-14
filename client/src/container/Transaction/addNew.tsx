@@ -37,7 +37,7 @@ export const AddFormView = ({
       (bucket) => bucket._id === value.bucket
     );
   }
-
+  console.log(value);
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex flex-col mb-4">
@@ -58,6 +58,7 @@ export const AddFormView = ({
         <input
           name="spend-amount"
           type="number"
+          step="0.01"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
           defaultValue={value !== undefined ? value.amount : 0}
         />
