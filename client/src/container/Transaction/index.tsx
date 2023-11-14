@@ -32,8 +32,18 @@ const TransactionDetailView = ({
         })}
       </p>
       <section className="flex justify-between px-4 py-2">
-        <button onClick={handleEdit}>Edit</button>
-        <button onClick={handleDelete}>Delete</button>
+        <button
+          className="block bg-blue-400 hover:bg-blue-600 text-white uppercase text-lg mx-auto px-4 py-2 rounded"
+          onClick={handleEdit}
+        >
+          Edit
+        </button>
+        <button
+          className="block bg-red-400 hover:bg-red-600 text-white uppercase text-lg mx-auto px-4 py-2 rounded"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
       </section>
     </div>
   );

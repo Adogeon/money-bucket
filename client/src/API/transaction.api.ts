@@ -86,7 +86,7 @@ export const deleteTransaction = async (
       user,
       "DELETE"
     );
-    const result = await handleResponse(fetchResponse);
+    const result = fetchResponse.ok;
     return result;
   } catch (error) {
     console.log(error);

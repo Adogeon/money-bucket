@@ -6,9 +6,12 @@ import { addTransaction } from "../../API/transaction.api";
 import { useApi } from "../../hooks/useAPI";
 import { useNavigate } from "react-router-dom";
 
-interface inputTransaction extends Partial<Omit<Transaction, "bucket">> {
+interface formTransaction extends Omit<Transaction, "bucket" | "user" | "id"> {
   bucket: string;
 }
+
+type inputTransaction = Partial<formTransaction>;
+
 interface iBucket {
   name: string;
   _id: string;
@@ -18,7 +21,7 @@ interface iAddFormViewProps {
   date: string;
   handleDateChange: ReactEventHandler;
   buckets: Array<iBucket>;
-  value?: Transaction;
+  value?: formTransaction;
 }
 export const AddFormView = ({
   handleSubmit,
@@ -28,6 +31,13 @@ export const AddFormView = ({
   value,
 }: iAddFormViewProps) => {
   const navigate = useNavigate();
+  let valueBucketIndex = 0;
+  if (value !== undefined) {
+    valueBucketIndex = buckets.findIndex(
+      (bucket) => bucket._id === value.bucket
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex flex-col mb-4">
@@ -74,26 +84,15 @@ export const AddFormView = ({
         </label>
         <select
           name="spend-bucket"
+          defaultValue={buckets[valueBucketIndex]._id}
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
         >
           {buckets.map((bucket, index) => {
-            if (value !== undefined && bucket._id === value.bucket.id) {
-              return (
-                <option
-                  key={`bucket-${index}`}
-                  value={bucket._id}
-                  selected={true}
-                >
-                  {bucket.name}
-                </option>
-              );
-            } else {
-              return (
-                <option key={`bucket-${index}`} value={bucket._id}>
-                  {bucket.name}
-                </option>
-              );
-            }
+            return (
+              <option key={`bucket-${index}`} value={bucket._id}>
+                {bucket.name}
+              </option>
+            );
           })}
         </select>
       </div>

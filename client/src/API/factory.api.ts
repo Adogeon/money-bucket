@@ -3,7 +3,7 @@ export const createRequest = async (
   auth: string | null,
   method: string = "GET",
   body?: any
-): Promise<any> => {
+) => {
   const optionObj: Record<string, any> = {
     method,
     headers: {
