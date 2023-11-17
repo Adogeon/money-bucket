@@ -1,11 +1,9 @@
-export interface iBucketSummary {
-  id: string;
+export interface iBucketBase {
   name: string;
-  limit: number;
-  totalSpend: number;
+  id: string;
 }
 
-export interface bucketBrief {
-  id: string;
-  name: string;
+export interface iBucketSummary extends iBucketBase {
+  limit: number;
+  totalSpend: number;
 }

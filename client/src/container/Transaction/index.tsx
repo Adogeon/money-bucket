@@ -18,19 +18,31 @@ const TransactionDetailView = ({
   handleDelete,
 }: TransactionDetailViewProps) => {
   return (
-    <div className=" mx-auto border-2 flex flex-col gap-y-4 max-w-sm items-center text-2xl">
-      <section>{data?.summary}</section>
-      <p className="flex flex-col text-7xl items-center font-mono font-semibold">
-        <span>{data?.amount}</span>
-        <span className="text-3xl">{data?.currency}</span>
-      </p>
-      <p>
-        {new Date(data.date).toLocaleString("default", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })}
-      </p>
+    <div className="mb-4">
+      <section className="flex flex-col mb-4">
+        <h1 className="text-grey text-left text-sm font-mono">Summary:</h1>
+        <p className="font-medium text-2xl text-gray-500">{data?.summary}</p>
+      </section>
+      <section className="flex flex-col mb-4">
+        <h1 className="text-grey text-left text-sm font-mono">Bucket:</h1>
+        <p className="font-medium text-2xl text-gray-500">
+          {data?.bucket.name}
+        </p>
+      </section>
+      <section className="flex flex-col mb-4">
+        <h1 className="text-grey text-left text-sm font-mono">Amount:</h1>
+        <p className="font-medium text-2xl text-gray-500">{`${data?.amount} ${data?.currency}`}</p>
+      </section>
+      <section className="flex flex-col mb-4">
+        <h1 className="text-grey text-left text-sm font-mono">Date:</h1>
+        <p className="font-medium text-xl text-gray-500">
+          {new Date(data.date).toLocaleString("default", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+        </p>
+      </section>
       <section className="flex justify-between px-4 py-2">
         <button
           className="block bg-blue-400 hover:bg-blue-600 text-white uppercase text-lg mx-auto px-4 py-2 rounded"
@@ -90,7 +102,7 @@ const TransactionPage = () => {
   };
 
   return (
-    <div className="flex items-center h-screen w-full">
+    <div className="flex items-center w-full h-full">
       <div className="w-full bg-white rounded shadow-sm p-8 m-4 md:max-w-sm md:mx-auto">
         {response.isFetching ? (
           <div>Loading ... </div>

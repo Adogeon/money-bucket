@@ -22,7 +22,6 @@ const Layout = (): JSX.Element => {
       <ProvideAuth>
         <AuthContainer>
           <header>
-            <h1>Nav bar go here</h1>
             <Appbar />
           </header>
           <main className="bg-slate-300">

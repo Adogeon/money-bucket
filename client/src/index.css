@@ -10,6 +10,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #DDF2FD;
+  min-height: 100vh;
+}
+
+#root {
+  height: 100%;
+  display: grid;
+  grid-auto-columns: minmax(100px, auto);
 }
 
 code {

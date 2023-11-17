@@ -22,7 +22,7 @@ const BucketSummary = ({ bucket }: BucketSummaryProps): JSX.Element => {
     >
       <Link to={`/bucket/${id}`}>
         <div className={"w-full flex flex-row justify-between"}>
-          <div className={"font-semibold"}>{name}</div>
+          <div className={"font-semibold text-secondary"}>{name}</div>
           <div className={"flex flex-col items-end"}>
             <p
               className={`text-sm font-semibold ${
@@ -39,7 +39,7 @@ const BucketSummary = ({ bucket }: BucketSummaryProps): JSX.Element => {
 
         <div className={" w-full bg-gray-200 h-2"}>
           <div
-            className={"bg-blue-600 h-2 relative z-20"}
+            className={"bg-primary h-2 relative z-20"}
             style={{ width: `${bucketStatus > 0 ? bucketStatus : 0}%` }}
           />
         </div>

@@ -9,7 +9,7 @@ interface TableHeaderProps {
 const TableHeader = ({ headers, children }: TableHeaderProps) => {
   return (
     <table className="w-full text-center shadow-md spending-table">
-      <thead className="border-b bg-gray-800">
+      <thead className="border-b bg-primary">
         <tr>
           {headers.map((header, index) => (
             <th

@@ -58,7 +58,7 @@ const BucketPage = () => {
         <div>Loading ... </div>
       ) : (
         <div className="mx-auto container">
-          <h1 className="text-center text-2xl font-extrabold text-gray-800">
+          <h1 className="text-center text-2xl font-extrabold text-primary">
             {data.name}
           </h1>
           <section>
