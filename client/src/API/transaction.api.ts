@@ -1,5 +1,9 @@
 import { createRequest, handleResponse } from "./factory.api";
-import type { Transaction, iEditTransactionInput } from "../types/transaction";
+import type {
+  Transaction,
+  iEditTransactionInput,
+  iTransactionDisplay,
+} from "../types/transaction";
 
 export const addTransaction = async (
   user: string | null,
@@ -42,7 +46,7 @@ export const getMonthTransactions = async (
 export const getTransactionDetail = async (
   user: string | null,
   transactionId: string
-): Promise<Transaction> => {
+): Promise<iTransactionDisplay> => {
   try {
     const fetchResponse = await createRequest(
       `/api/transaction/${transactionId}`,

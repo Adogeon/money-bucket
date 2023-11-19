@@ -1,12 +1,12 @@
 import express from "express";
-import { SchemaTypes } from "mongoose";
+import { PipelineStage, SchemaTypes } from "mongoose";
 import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
 import Transaction from "../models/transaction";
 import type { iTransaction } from "../models/transaction";
 import Bucket from "../models/bucket";
-import { getUserId } from "./utils";
+import { getUserId, strToObjectId } from "./utils";
 
 const router = express.Router();
 
@@ -130,14 +130,30 @@ router.get("/m/:monthyear", (async (req, res, next) => {
 router.get("/:id", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    const transactionDoc = await Transaction.findOne({
-      _id: req.params.id,
-      user: userId,
-    });
-    if (transactionDoc === null)
+    const transactionId = strToObjectId(req.params.id);
+    const pipeline = [
+      { $match: { user: userId, _id: transactionId } },
+      { $addFields: { id: "$_id" } },
+      {
+        $lookup: {
+          from: "bucket",
+          localField: "bucket",
+          foreignField: "_id",
+          as: "bucket",
+          pipeline: [
+            { $addFields: { id: "$_id" } },
+            { $project: { name: 1, id: 1, _id: 0 } },
+          ],
+        },
+      },
+      { $unwind: { path: "$bucket" } },
+      { $project: { _id: 0, _: 0, user: 0 } },
+    ];
+    const transactionDocs = await Transaction.aggregate(pipeline);
+    if (transactionDocs.length !== 1)
       throw new Error("Can't find the specific document ");
-    const transactionJSON = transactionDoc.toJSON();
-    res.status(200).json(transactionJSON);
+
+    res.status(200).json(transactionDocs[0]);
   } catch (error) {
     next(error);
   }

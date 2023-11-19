@@ -87,7 +87,8 @@ router.get("/simple", async (req, res, next) => {
     const userId = getUserId(req);
     const bukcetList = await Bucket.aggregate([
       { $match: { user: userId } },
-      { $project: { name: 1, _id: 1 } },
+      { $addFields: { id: "$_id" } },
+      { $project: { name: 1, _id: 0, id: 1 } },
       { $sort: { name: 1 } },
     ]);
 

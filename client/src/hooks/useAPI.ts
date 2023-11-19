@@ -3,9 +3,9 @@ import { useAuth } from "../context/AuthContext";
 import type { apiFunc } from "../API";
 
 interface iResponse<T> {
-  data: T | null;
+  data: T | undefined;
   isFetching: boolean;
-  error: Error | null;
+  error: Error | undefined;
   isSuccess: boolean;
 }
 export type callApiFnc<T extends (...args: any) => Promise<any>> = (
@@ -23,9 +23,9 @@ export function useApi<T extends apiFunc<any>>(
   React.MutableRefObject<boolean>
 ] {
   const [response, setResponse] = useState({
-    data: null,
+    data: undefined,
     isFetching: true,
-    error: null,
+    error: undefined,
     isSuccess: false,
   });
   const { user } = useAuth();
@@ -33,8 +33,8 @@ export function useApi<T extends apiFunc<any>>(
 
   const fetchMethod = (...args: any) => {
     setResponse({
-      error: null,
-      data: null,
+      error: undefined,
+      data: undefined,
       isFetching: true,
       isSuccess: false,
     });
@@ -42,7 +42,7 @@ export function useApi<T extends apiFunc<any>>(
       .then((res: any) => {
         if (!ignoreRef.current) {
           setResponse({
-            error: null,
+            error: undefined,
             data: res,
             isFetching: false,
             isSuccess: true,
@@ -52,7 +52,7 @@ export function useApi<T extends apiFunc<any>>(
       .catch((err: any) => {
         if (!ignoreRef.current) {
           setResponse({
-            data: null,
+            data: undefined,
             isSuccess: false,
             isFetching: false,
             error: err,

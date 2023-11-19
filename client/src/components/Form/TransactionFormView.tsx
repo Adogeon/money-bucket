@@ -1,42 +1,48 @@
-import type { FormEvent, ReactEventHandler } from "react";
-import type { iTransactionUpdate } from "../../types/transaction";
+import type { FormEvent } from "react";
+import type {
+  iTransactionDisplay,
+  iTransactionUpdate,
+} from "../../types/transaction";
 import type { iBucketBase } from "../../types/bucket";
-
-interface iTransactionFormElements extends HTMLFormControlsCollection {
-  ["spend-name"]: HTMLInputElement;
-  ["spend-amount"]: HTMLInputElement;
-  ["spend-date"]: HTMLInputElement;
-  ["spend-bucket"]: HTMLInputElement;
-}
-
-interface iTransactionForm extends HTMLFormElement {
-  readonly elements: iTransactionFormElements;
-}
+import type { iTransactionForm } from "./TransactionFormContainer";
 
 interface iTransactionFormViewProps {
   handleSubmit: (e: FormEvent<iTransactionForm>) => void;
   handleBack: VoidFunction;
-  handleDateChange: ReactEventHandler;
+  handleValueChange: (
+    e: FormEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   buckets: Array<iBucketBase>;
-  value?: iTransactionUpdate;
+  value: iTransactionDisplay | undefined;
 }
 
 export const TransactionFormView = ({
   handleSubmit,
-  handleDateChange,
+  handleValueChange,
   handleBack,
   buckets,
   value,
 }: iTransactionFormViewProps) => {
-  let valueBucketIndex = 0;
-  if (value !== undefined) {
-    valueBucketIndex = buckets.findIndex(
-      (bucket) => bucket.id === value.bucket
-    );
-  }
+  /*let valueBucketIndex = 0;
+  if (value) {
+    if (value.bucket.id !== "444") {
+      valueBucketIndex = buckets.findIndex(
+        (bucket) => bucket.id === value.bucket.id
+      );
+    }
+  }*/
 
   const converDateToStrVal = (date: Date) =>
     new Date(date).toISOString().split("T")[0];
+
+  console.log("Re-render");
+  console.log("value", value);
+  console.log("summary", value ? value.summary : "");
+  console.log("amount", value ? value.amount : 0);
+  console.log(
+    "date",
+    value ? converDateToStrVal(value.date) : converDateToStrVal(new Date())
+  );
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
@@ -48,7 +54,9 @@ export const TransactionFormView = ({
           name="spend-name"
           type="text"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50 "
-          defaultValue={value !== undefined ? value.summary : ""}
+          value={value ? value.summary : ""}
+          onChange={handleValueChange}
+          placeholder="What is the transaction for ?"
         />
       </div>
       <div className="flex flex-col mb-4">
@@ -60,7 +68,9 @@ export const TransactionFormView = ({
           type="number"
           step="0.01"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
-          defaultValue={value !== undefined ? value.amount : 0}
+          value={value ? value.amount : 0}
+          onChange={handleValueChange}
+          placeholder="How much is the transaction ?"
         />
       </div>
       <div className="flex flex-col mb-4">
@@ -71,11 +81,12 @@ export const TransactionFormView = ({
           name="spend-date"
           type="date"
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
-          defaultValue={
-            value !== undefined
+          value={
+            value
               ? converDateToStrVal(value.date)
               : converDateToStrVal(new Date())
           }
+          onChange={handleValueChange}
         />
       </div>
       <div className="flex flex-col mb-4">
@@ -84,7 +95,8 @@ export const TransactionFormView = ({
         </label>
         <select
           name="spend-bucket"
-          defaultValue={buckets[valueBucketIndex].id}
+          value={value?.bucket.id ?? buckets[0].id}
+          onChange={handleValueChange}
           className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50"
         >
           {buckets.map((bucket, index) => {

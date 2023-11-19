@@ -8,19 +8,13 @@ interface iTransactionBase {
   date: Date;
 }
 
-export interface iTransasctionNew extends iTransactionBase {
-  user: string;
+export interface iTransactionUpdate extends iTransactionBase {
   bucket: string;
 }
 
 export interface iTransactionDisplay extends iTransactionBase {
   id: string;
   bucket: iBucketBase;
-}
-
-export interface iTransactionUpdate extends iTransactionBase {
-  id: string;
-  bucket: string;
 }
 
 export interface Transaction {
