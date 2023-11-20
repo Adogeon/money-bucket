@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useApi } from "../../hooks/useAPI";
 import { useNavigate, useParams } from "react-router-dom";
 import {

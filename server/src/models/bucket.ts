@@ -6,11 +6,12 @@ export interface iBucket {
   name: string;
   type: string;
   user: Types.ObjectId;
-  defaultLimit: PaymentCurrencyAmount;
-  monthlyLimit?: [
+  defaultLimit: number;
+  currency: string;
+  monthlyRecord?: [
     {
       month: string;
-      limit: PaymentCurrencyAmount;
+      expense: number;
     }
   ];
   transactions?: PopulatedDoc<iTransaction & Document>;
@@ -19,17 +20,12 @@ export interface iBucket {
 const BucketSchema = new Schema<iBucket>({
   name: String,
   type: String,
-  defaultLimit: {
-    amount: Number,
-    currency: String,
-  },
-  monthlyLimit: [
+  defaultLimit: Number,
+  currency: String,
+  monthlyRecord: [
     {
       month: String,
-      limit: {
-        amount: Number,
-        currency: String,
-      },
+      expense: Number,
     },
   ],
   user: { type: Schema.Types.ObjectId, ref: "User" },

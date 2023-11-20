@@ -64,8 +64,8 @@ router.get("/summary/:month", (async (req, res, next) => {
           _id: 0,
           id: "$detail._id",
           name: "$detail.name",
-          currency: "$detail.defaultLimit.currency",
-          limit: "$detail.defaultLimit.amount",
+          currency: "$detail.currency",
+          limit: "$detail.defaultLimit",
           totalSpend: 1,
           count: 1,
         },
@@ -105,10 +105,12 @@ router.get("/simple", async (req, res, next) => {
 router.get("/:bucketId", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
+
     const bucketDoc = await Bucket.findOne({
       _id: req.params.bucketId,
       user: userId,
     });
+
     if (bucketDoc === null)
       throw new Error(`Can't find bucket with id ${req.params.bucketId}`);
 
@@ -129,8 +131,8 @@ router.get("/:bucketId/m/:month", (async (req, res, next) => {
     const bucketId = new mongoose.Types.ObjectId(req.params.bucketId);
     const reqMonth = Number(req.params.month.slice(0, 2));
     const reqYear = Number(req.params.month.slice(2));
-    const transactionDocs = await Transaction.aggregate([
-      { $match: { user: userId, bucket: bucketId } },
+
+    const TransactionPipeline = [
       {
         $addFields: {
           id: "$_id",
@@ -155,8 +157,40 @@ router.get("/:bucketId/m/:month", (async (req, res, next) => {
           user: 0,
         },
       },
-    ]);
-    res.status(200).json(transactionDocs);
+    ];
+
+    const BucketPipeline = [
+      { $match: { user: userId, _id: bucketId } },
+      {
+        $lookup: {
+          from: "transaction",
+          localField: "_id",
+          foreignField: "bucket",
+          as: "transactions",
+          pipeline: TransactionPipeline,
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          id: "$_id",
+          defaultLimit: 1,
+          transactions: 1,
+          currency: 1,
+          totalSpend: { $sum: "$transactions.amount" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ];
+
+    const bucketDocs = await Bucket.aggregate(BucketPipeline);
+    console.log(bucketDocs);
+    if (bucketDocs.length !== 1) throw new Error("Can't find the document");
+    res.status(200).json(bucketDocs[0]);
   } catch (error) {
     next(error);
   }

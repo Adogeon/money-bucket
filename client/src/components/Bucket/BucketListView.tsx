@@ -2,7 +2,7 @@ import type { iBucketSummary } from "./BucketSummary";
 import BucketSummary from "./BucketSummary";
 
 interface BucketListViewProps {
-  bucketList: iBucketSummary[] | null;
+  bucketList?: iBucketSummary[];
   isLoading: boolean;
 }
 const BucketListView = ({

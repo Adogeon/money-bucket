@@ -11,7 +11,6 @@ interface BucketSummaryProps {
 }
 
 const BucketSummary = ({ bucket }: BucketSummaryProps): JSX.Element => {
-  console.log(bucket);
   const { limit, totalSpend, name, id, currency } = bucket;
   const available = Math.round((limit - totalSpend) * 100) / 100;
   const bucketStatus = (available / limit) * 100;

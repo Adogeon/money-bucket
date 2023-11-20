@@ -40,7 +40,8 @@ async function main() {
   const seedBuckets = seedBucketRaw.map((bucket) => {
     return {
       name: bucket["Category"],
-      defaultLimit: { amount: parseFloat(bucket["Budget"]), currency: "USD" },
+      defaultLimit: parseFloat(bucket["Budget"]),
+      currency: "USD",
       type: "bucket",
       user: user1.insertedId,
     };

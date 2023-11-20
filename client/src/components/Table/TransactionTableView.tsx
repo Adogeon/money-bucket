@@ -49,6 +49,7 @@ interface ShortTransactionTableViewProps {
 export const ShortTransactionTableView = ({
   data,
 }: ShortTransactionTableViewProps) => {
+  console.log("data", data);
   return (
     <TableHeader headers={["Date", "Summary", "Amount"]}>
       {data.map((transaction) => (

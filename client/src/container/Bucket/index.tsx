@@ -39,40 +39,68 @@ const BucketSpendingTable = ({ bucket }: BucketSpendingTableProps) => {
 
 const BucketPage = () => {
   const { bucketId } = useParams();
-  console.log(bucketId);
-  const [{ data, isFetching }, loadBucketDetail, ignore] =
-    useApi(getBucketDetail);
 
-  console.log(isFetching);
+  const defaultBucket = {
+    id: "",
+    name: "Expense Bucket",
+    transactions: [],
+    currency: "USD",
+    defaultLimit: 100,
+    totalSpend: 0,
+  };
+
+  const [month, setMonth] = useState(new Date("12/30/2022"));
+  const [bucket, setBucket] = useState(defaultBucket);
+  const [response, loadBucketMonthSpending, ignore] = useApi(
+    getBucketMonthSpending
+  );
+
+  const handleMonthChange = (newMonth: Date) => {
+    setMonth(newMonth);
+  };
 
   useEffect(() => {
-    loadBucketDetail(bucketId ? bucketId : "");
+    loadBucketMonthSpending(bucketId ? bucketId : "", month);
     () => {
       ignore.current = true;
     };
-  }, []);
+  }, [month]);
+
+  useEffect(() => {
+    console.log("success", response.isSuccess);
+    console.log("bucket", bucket);
+    console.log("response", response.data);
+    if (response.isSuccess) {
+      setBucket(response.data);
+    }
+  }, [response]);
+
+  useEffect(() => {
+    console.log("data-bucket", bucket);
+  }, [bucket]);
 
   return (
     <>
-      {isFetching ? (
+      {response.isFetching ? (
         <div>Loading ... </div>
       ) : (
         <div className="mx-auto container">
           <h1 className="text-center text-2xl font-extrabold text-primary">
-            {data.name}
+            {bucket.name}
           </h1>
+          <MonthPicker month={month} onMonthChange={handleMonthChange} />
           <section>
             <p>
               <em>Spending: </em>
-              <span>{`${data.totalSpend} ${data.currency}`}</span>
+              <span>{`${bucket.totalSpend} ${bucket.currency}`}</span>
             </p>
             <p>
               <em>Limit: </em>
-              <span>{`${data.limit} ${data.currency}`}</span>
+              <span>{`${bucket.defaultLimit} ${bucket.currency}`}</span>
             </p>
           </section>
           <section>
-            <BucketSpendingTable bucket={bucketId ? bucketId : ""} />
+            <ShortTransactionTableView data={bucket.transactions} />
           </section>
         </div>
       )}

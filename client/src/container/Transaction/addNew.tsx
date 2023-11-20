@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { addTransaction } from "../../API/transaction.api";
 import { useApi } from "../../hooks/useAPI";
 import { useNavigate } from "react-router-dom";
@@ -6,11 +6,6 @@ import TransactionForm from "../../components/Form/TransactionFormContainer";
 
 const AddPage = () => {
   const navigate = useNavigate();
-
-  const handleDone = () => {
-    navigate("/", { replace: true });
-  };
-
   const [addNewResponse, addNewTransaction] = useApi(addTransaction);
 
   useEffect(() => {

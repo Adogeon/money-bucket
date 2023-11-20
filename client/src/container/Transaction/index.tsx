@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Transaction } from "../../types/transaction";
+import { iTransactionDisplay } from "../../types/transaction";
 import { useApi } from "../../hooks/useAPI";
 import {
   deleteTransaction,
@@ -8,7 +8,7 @@ import {
 } from "../../API/transaction.api";
 
 interface TransactionDetailViewProps {
-  data: Transaction;
+  data: iTransactionDisplay;
   handleEdit: VoidFunction;
   handleDelete: VoidFunction;
 }

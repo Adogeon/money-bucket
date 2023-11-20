@@ -1,8 +1,5 @@
 import type { FormEvent } from "react";
-import type {
-  iTransactionDisplay,
-  iTransactionUpdate,
-} from "../../types/transaction";
+import type { iTransactionDisplay } from "../../types/transaction";
 import type { iBucketBase } from "../../types/bucket";
 import type { iTransactionForm } from "./TransactionFormContainer";
 
@@ -23,15 +20,6 @@ export const TransactionFormView = ({
   buckets,
   value,
 }: iTransactionFormViewProps) => {
-  /*let valueBucketIndex = 0;
-  if (value) {
-    if (value.bucket.id !== "444") {
-      valueBucketIndex = buckets.findIndex(
-        (bucket) => bucket.id === value.bucket.id
-      );
-    }
-  }*/
-
   const converDateToStrVal = (date: Date) =>
     new Date(date).toISOString().split("T")[0];
 
