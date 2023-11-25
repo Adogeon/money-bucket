@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 import type { ReactNode } from "react";
 import { ProvideAuth, useAuth } from "./context/AuthContext";
 import Appbar from "./components/Appbar/Appbar";
+import Footer from "./components/Footer";
 
 import Home from "./container/Home";
 import AddPage from "./container/Transaction/addNew";
@@ -27,7 +28,7 @@ const Layout = (): JSX.Element => {
           <main className="bg-slate-300">
             <Outlet />
           </main>
-          <footer>@ me 2023</footer>
+          <Footer />
         </AuthContainer>
       </ProvideAuth>
     </>
