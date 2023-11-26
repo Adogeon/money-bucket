@@ -5,9 +5,9 @@ export interface iTransaction {
   summary: string;
   amount: number;
   currency: string;
-  type: string;
   date: Date;
-  bucket: Types.ObjectId;
+  from: Types.ObjectId;
+  to: Types.ObjectId;
   user: Types.ObjectId;
 }
 
@@ -15,8 +15,8 @@ const TransactionSchema = new Schema<iTransaction>({
   summary: String,
   amount: Number,
   currency: String,
-  bucket: { type: Schema.Types.ObjectId, ref: "Bucket" },
-  type: String,
+  from: { type: Schema.Types.ObjectId, ref: "Bucket" },
+  to: { type: Schema.Types.ObjectId, ref: "Bucket" },
   date: Date,
   user: { type: Schema.Types.ObjectId, ref: "User" },
 });
