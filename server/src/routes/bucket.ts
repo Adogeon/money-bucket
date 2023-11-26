@@ -76,6 +76,57 @@ router.get("/summary/:month", (async (req, res, next) => {
         },
       },
     ]);
+
+    const TransactionPipeline = [
+      {
+        $addFields: {
+          month: { $month: "$date" },
+          year: { $year: "$date" },
+        },
+      },
+      {
+        $match: {
+          month: reqMonth,
+          year: reqYear,
+        },
+      },
+    ];
+
+    const newBucketSummaries = Bucket.aggregate([
+      { $match: { user: userId } },
+      {
+        $lookup: {
+          from: "transaction",
+          localField: "_id",
+          foreignField: "from",
+          as: "spend",
+          pipeline: TransactionPipeline,
+        },
+      },
+      {
+        $lookup: {
+          from: "transaction",
+          localField: "_id",
+          foreignField: "to",
+          as: "fund",
+          pipeline: TransactionPipeline,
+        },
+      },
+      {
+        $project: {
+          id: "$_id",
+          totalSpend: { $sum: "$spend.amount" },
+          totalFund: { $sum: "$spend.fund" },
+        },
+      },
+      {
+        $sort: {
+          name: 1,
+        },
+      },
+    ]);
+    console.log(newBucketSummaries);
+
     res.status(200).json(bucketSummariesDocs);
   } catch (error) {
     next(error);
