@@ -92,14 +92,14 @@ router.get("/summary/:month", (async (req, res, next) => {
       },
     ];
 
-    const newBucketSummaries = Bucket.aggregate([
+    const newBucketSummaries = await Bucket.aggregate([
       { $match: { user: userId } },
       {
         $lookup: {
           from: "transaction",
           localField: "_id",
           foreignField: "from",
-          as: "spend",
+          as: "fund",
           pipeline: TransactionPipeline,
         },
       },
@@ -108,15 +108,25 @@ router.get("/summary/:month", (async (req, res, next) => {
           from: "transaction",
           localField: "_id",
           foreignField: "to",
-          as: "fund",
+          as: "spend",
           pipeline: TransactionPipeline,
         },
       },
       {
         $project: {
           id: "$_id",
+          name: 1,
+          type: 1,
+          limit: "$defaultLimit",
+          currency: 1,
           totalSpend: { $sum: "$spend.amount" },
-          totalFund: { $sum: "$spend.fund" },
+          count: { $size: "$spend" },
+          totalFund: { $sum: "$fund.amount" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
         },
       },
       {
@@ -125,9 +135,8 @@ router.get("/summary/:month", (async (req, res, next) => {
         },
       },
     ]);
-    console.log(newBucketSummaries);
 
-    res.status(200).json(bucketSummariesDocs);
+    res.status(200).json(newBucketSummaries);
   } catch (error) {
     next(error);
   }

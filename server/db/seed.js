@@ -42,7 +42,7 @@ async function main() {
       name: bucket["Category"],
       defaultLimit: parseFloat(bucket["Budget"]),
       currency: "USD",
-      type: "bucket",
+      type: bucket["Types"],
       user: user1.insertedId,
     };
   });
@@ -67,7 +67,8 @@ async function main() {
       currency: "USD",
       type: transaction["Transaction Type"],
       date: new Date(transaction["Date"]),
-      bucket: bucketIdMap[transaction["Category"]],
+      to: bucketIdMap[transaction["To"]],
+      from: bucketIdMap[transaction["From"]],
       user: user1.insertedId,
     };
   });
