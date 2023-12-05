@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import type { Types, PopulatedDoc, Document } from "mongoose";
 import type { iTransaction } from "./transaction";
 
-export interface iBucket {
+export interface iBucket extends Document {
   name: string;
   type: string;
   user: Types.ObjectId;

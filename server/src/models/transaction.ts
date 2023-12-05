@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import type { Types } from "mongoose";
 
-export interface iTransaction {
+export interface iTransaction extends Document {
   summary: string;
   amount: number;
   currency: string;
