@@ -1,5 +1,58 @@
-import { getModelDoc, runModelAggregate } from "../data/data";
+import { iBucket } from "src/models/bucket";
+import {
+  createModelDoc,
+  deleteModelDoc,
+  getModelDoc,
+  runModelAggregate,
+  updateModelDoc,
+} from "../data/data";
 import mongoose from "mongoose";
+
+export const createNewBucket = async (
+  userId: mongoose.Types.ObjectId,
+  bucketInput: Partial<iBucket>
+) => {
+  try {
+    const result = await createModelDoc("Bucket", {
+      ...bucketInput,
+      user: userId,
+    });
+
+    return result;
+  } catch (error) {
+    throw new Error("Problem in creating new bucket");
+  }
+};
+
+export const updateBucket = async (
+  userId: mongoose.Types.ObjectId,
+  bucketId: mongoose.Types.ObjectId,
+  updateBucket: Partial<iBucket>
+) => {
+  const result = await updateModelDoc(
+    "Bucket",
+    { _id: bucketId, user: userId },
+    updateBucket
+  );
+  if (result === null) {
+    throw new Error(`Problem in updating buccket ${bucketId}`);
+  }
+  return result;
+};
+
+export const deleteBucket = async (
+  userId: mongoose.Types.ObjectId,
+  bucketId: mongoose.Types.ObjectId
+) => {
+  const result = await deleteModelDoc("Bucket", {
+    user: userId,
+    _id: bucketId,
+  });
+  if (result === null) {
+    throw new Error(`Problem in deleting bucket ${bucketId}`);
+  }
+  return result._id === bucketId ? true : false;
+};
 
 export const getSpendingReport = async (
   userId: mongoose.Types.ObjectId,
@@ -93,7 +146,7 @@ export const getBucketDetail = async (
   if (bucketDoc === null)
     throw new Error(`Can't find bucket with id ${bucketId}`);
 
-  return bucketDoc;
+  return bucketDoc.toJSON();
 };
 
 export const getBucketSpendingReport = async (

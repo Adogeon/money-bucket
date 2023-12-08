@@ -40,7 +40,7 @@ export const getModelDoc = async <T extends modelsName>(
 
 export const createModelDoc = async <T extends modelsName>(
   model: T,
-  newDoc: inferDocType<T>
+  newDoc: Partial<inferDocType<T>>
 ) => {
   switch (model) {
     case "User":

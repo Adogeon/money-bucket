@@ -60,4 +60,5 @@ userSchema.set("toJSON", { virtuals: true });
 
 const User = model<iUser>("User", userSchema, "user");
 
+export type iUserModel = typeof User;
 export default User;

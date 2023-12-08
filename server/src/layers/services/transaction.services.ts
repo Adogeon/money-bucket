@@ -50,7 +50,7 @@ export const deleteTransaction = async (
   if (result === null) {
     throw new Error(`Problem in deleting transaction ${transactionId}`);
   }
-  return result ? true : false;
+  return result._id === transactionId ? true : false;
 };
 
 export const getMonthSpending = async (

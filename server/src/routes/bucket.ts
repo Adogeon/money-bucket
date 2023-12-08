@@ -17,65 +17,6 @@ router.get("/summary/:month", (async (req, res, next) => {
     const userId = getUserId(req);
     const reqMonth = Number(req.params.month.slice(0, 2));
     const reqYear = Number(req.params.month.slice(2));
-    const bucketSummariesDocs = await Transaction.aggregate([
-      { $match: { user: userId } },
-      {
-        $addFields: {
-          month: {
-            $month: "$date",
-          },
-          year: {
-            $year: "$date",
-          },
-        },
-      },
-      {
-        $match: {
-          month: reqMonth,
-          year: reqYear,
-        },
-      },
-      {
-        $group: {
-          _id: "$bucket",
-          totalSpend: {
-            $sum: "$amount",
-          },
-          count: {
-            $sum: 1,
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: "bucket",
-          localField: "_id",
-          foreignField: "_id",
-          as: "detail",
-        },
-      },
-      {
-        $unwind: {
-          path: "$detail",
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          id: "$detail._id",
-          name: "$detail.name",
-          currency: "$detail.currency",
-          limit: "$detail.defaultLimit",
-          totalSpend: 1,
-          count: 1,
-        },
-      },
-      {
-        $sort: {
-          name: 1,
-        },
-      },
-    ]);
 
     const TransactionPipeline = [
       {
