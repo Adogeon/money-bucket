@@ -15,10 +15,10 @@ const TransactionSchema = new Schema<iTransaction>({
   summary: String,
   amount: Number,
   currency: String,
-  from: { type: Schema.Types.ObjectId, ref: "Bucket" },
-  to: { type: Schema.Types.ObjectId, ref: "Bucket" },
+  from: { type: Schema.Types.ObjectId, ref: "Bucket", required: true },
+  to: { type: Schema.Types.ObjectId, ref: "Bucket", required: true },
   date: Date,
-  user: { type: Schema.Types.ObjectId, ref: "User" },
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 TransactionSchema.set("toJSON", {

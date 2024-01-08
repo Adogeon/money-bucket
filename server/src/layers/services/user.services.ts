@@ -1,15 +1,9 @@
-import { iUser } from "src/models/user";
-import {
-  createModelDoc,
-  updateModelDoc,
-  getModelDoc,
-  deleteModelDoc,
-} from "../data/data";
-import mongoose from "mongoose";
+import type { iUser } from "../../models/user";
+import userRepo from "../data/userRepo";
 
-export const verifyUserLogin = async (username: string, password: string) => {
+const verifyUserLogin = async (username: string, password: string) => {
   try {
-    const userDoc = await getModelDoc("User", { username });
+    const userDoc = await userRepo.searchByUsername(username);
     if (userDoc === null)
       throw new Error(`Can'f find user with username: ${username}`);
     const isMatch = await userDoc.comparePassword(password);
@@ -19,21 +13,17 @@ export const verifyUserLogin = async (username: string, password: string) => {
   }
 };
 
-export const createNewUser = async (username: string, password: string) => {
+const createNewUser = async (username: string, password: string) => {
   try {
-    const userDoc = await createModelDoc("User", {
-      username,
-      password,
-      currency: "USD",
-    });
+    const userDoc = await userRepo.addNewUser(username, password)
     return userDoc._id;
   } catch (error) {
     throw error;
   }
 };
 
-export const getUserDetail = async (userId: mongoose.Types.ObjectId) => {
-  const userDoc = await getModelDoc("User", { _id: userId });
+const getUserDetail = async (userId: string) => {
+  const userDoc = await userRepo.searchById(userId);
   if (userDoc === null) {
     throw new Error(`Can't find user with id: ${userId}`);
   }
@@ -45,17 +35,23 @@ export const getUserDetail = async (userId: mongoose.Types.ObjectId) => {
   });
 };
 
-export const updateUser = async (
-  userId: mongoose.Types.ObjectId,
+const updateUser = async (
+  userId: string,
   userUpdate: Partial<iUser>
 ) => {
-  const userDoc = await updateModelDoc("User", { _id: userId }, userUpdate);
+  const userDoc = await userRepo.updateUser(userId, userUpdate);
   if (userDoc === null) throw new Error(`Can't update user with id: ${userId}`);
   return userDoc;
 };
 
-export const deleteUser = async (userId: mongoose.Types.ObjectId) => {
-  const userDoc = await deleteModelDoc("User", { _id: userId });
-  if (userDoc === null) throw new Error(`Can't delete user with id: ${userId}`);
-  return userDoc._id === userId ? true : false;
+const deleteUser = async (userId: string) => {
+  return await userRepo.deleteUser(userId)
 };
+
+export default Object.freeze({
+  verifyUserLogin,
+  createNewUser,
+  getUserDetail,
+  updateUser,
+  deleteUser,
+})
