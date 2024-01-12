@@ -4,6 +4,7 @@ import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
 import Transaction from "../models/transaction";
+import transactionController from "src/controllers/transaction.controller";
 import type { iTransaction } from "../models/transaction";
 import Bucket from "../models/bucket";
 import { getUserId, strToObjectId } from "./utils";
@@ -17,18 +18,47 @@ type TypedBodyReq<T> = Request<ParamsDictionary, Record<string, any>, T>;
  * for insert on transaction
  * expect req.user
  * return a transaction document in JSON format
- */
+*/
 type iTransactionInput = Omit<iTransaction, "user">;
 router.post("/", (async (req: TypedBodyReq<iTransactionInput>, res, next) => {
   try {
     const userId = getUserId(req);
-    const transaction = await Transaction.create({ ...req.body, user: userId });
-    const transactionJSON = transaction.toJSON();
-    res.status(200).json({ ...transactionJSON });
+    const transaction = await transactionController.create({ ...req.body, user: userId });
+    res.status(200).json({ ...transaction });
   } catch (error) {
     next(error);
   }
 }) as RequestHandler);
+
+router
+  .route("/:id")
+  .get(async (req, res, next) => {
+    try {
+      const transactionId = req.params.id;
+      const transactionDoc = transactionController.getOneById(transactionId);
+      res.json(transactionDoc);
+    } catch (error) {
+      next(error);
+    }
+  })
+  .put(async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const update = req.body;
+      const updateTransaction = await transactionController.updateById(id, update);
+      res.json(updateTransaction);
+    } catch (error) {
+      next(error);
+    }
+  }).delete(async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const isSuccess = await transactionController.deleteById(id);
+      return isSuccess ? res.sendStatus(200) : res.sendStatus(404);
+    } catch (error) {
+      next(error);
+    }
+  })
 
 /**
  * @route POST /transaction/multi
@@ -36,29 +66,8 @@ router.post("/", (async (req: TypedBodyReq<iTransactionInput>, res, next) => {
  * expect req.user
  * return a transction document in JSON format
  */
-interface iMultTransactionInput {
-  transactions: iTransaction[];
-}
-router.post("/multi", (async (
-  req: TypedBodyReq<iMultTransactionInput>,
-  res,
-  next
-) => {
-  try {
-    const userId = getUserId(req);
-    const transactions = req.body.transactions.map((transaction) => ({
-      ...transaction,
-      user: userId,
-    }));
-    const transactionDocs = await Transaction.insertMany(transactions);
-    const transactionsJSON = transactionDocs.map((transaction) =>
-      transaction.toJSON()
-    );
-    res.status(200).json([...transactionsJSON]);
-  } catch (error) {
-    next(error);
-  }
-}) as RequestHandler);
+
+router.post("/multi");
 
 /**
  * @route GET /transaction/m/:month
@@ -127,37 +136,6 @@ router.get("/m/:monthyear", (async (req, res, next) => {
  *
  * return a specific transaction
  */
-router.get("/:id", (async (req, res, next) => {
-  try {
-    const userId = getUserId(req);
-    const transactionId = strToObjectId(req.params.id);
-    const pipeline = [
-      { $match: { user: userId, _id: transactionId } },
-      { $addFields: { id: "$_id" } },
-      {
-        $lookup: {
-          from: "bucket",
-          localField: "bucket",
-          foreignField: "_id",
-          as: "bucket",
-          pipeline: [
-            { $addFields: { id: "$_id" } },
-            { $project: { name: 1, id: 1, _id: 0 } },
-          ],
-        },
-      },
-      { $unwind: { path: "$bucket" } },
-      { $project: { _id: 0, _: 0, user: 0 } },
-    ];
-    const transactionDocs = await Transaction.aggregate(pipeline);
-    if (transactionDocs.length !== 1)
-      throw new Error("Can't find the specific document ");
-
-    res.status(200).json(transactionDocs[0]);
-  } catch (error) {
-    next(error);
-  }
-}) as RequestHandler);
 
 /**
  * @route GET /transaction/bucket/:name
@@ -180,45 +158,8 @@ router.get("/bucket/:name", (async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+
 }) as RequestHandler);
 
-router.put("/:id", async (req, res, next) => {
-  try {
-    const userId = getUserId(req);
-    const update = { ...req.body };
-    const updateTransaction = await Transaction.findOneAndUpdate(
-      { _id: req.params.id, user: userId },
-      update,
-      { new: true, runValidators: true }
-    );
-    if (
-      updateTransaction === null ||
-      updateTransaction._id.toString() !== req.params.id
-    ) {
-      res.sendStatus(404);
-    } else {
-      res.status(200).json(updateTransaction);
-    }
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.delete("/:id", (async (req, res, next) => {
-  try {
-    const userId = getUserId(req);
-    const transaction = await Transaction.findOneAndDelete({
-      _id: req.params.id,
-      user: userId,
-    });
-    if (transaction === null || transaction._id.toString() !== req.params.id) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(200);
-    }
-  } catch (error) {
-    next(error);
-  }
-}) as RequestHandler);
 
 export default router;
