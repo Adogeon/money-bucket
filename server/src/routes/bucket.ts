@@ -3,14 +3,43 @@ import type { Request, Response, NextFunction, RequestHandler } from "express";
 import mongoose from "mongoose";
 import Bucket from "../models/bucket";
 import { getUserId } from "./utils";
-import Transaction from "../models/transaction";
+import bucketServices from "src/layers/services/bucket.services";
 
 const router = express.Router();
 
-/**
- * @route GET /bucket/summary/:month
- * for getting user bucket summaries by the month
- */
+
+router.post("/", async (req, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const newBucket = await bucketServices.create({ ...req.body, user: userId });
+    return res.json({ newBucket })
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.route("/:bucketId").get(async (req, res, next) => {
+  try {
+    const bucket = await bucketServices.getBucketById(req.params.bucketId);
+    return res.json({ bucket })
+  } catch (error) {
+    next(error);
+  }
+}).put(async (req, res, next) => {
+  try {
+    const bucket = await bucketServices.updateBucketById(req.params.bucketId, req.body);
+    return res.json({ bucket })
+  } catch (error) {
+    next(error)
+  }
+}).delete(async (req, res, next) => {
+  try {
+    const isSuccess = await bucketServices.deleteBucketById(req.params.bucketId);
+    return isSuccess ? res.sendStatus(200) : res.sendStatus(404);
+  } catch (error) {
+    next(error)
+  }
+})
 
 router.get("/summary/:month", (async (req, res, next) => {
   try {
@@ -103,24 +132,6 @@ router.get("/simple", async (req, res, next) => {
  * @route GET /bucket/:name
  * for gettting the bucket
  */
-router.get("/:bucketId", (async (req, res, next) => {
-  try {
-    const userId = getUserId(req);
-
-    const bucketDoc = await Bucket.findOne({
-      _id: req.params.bucketId,
-      user: userId,
-    });
-
-    if (bucketDoc === null)
-      throw new Error(`Can't find bucket with id ${req.params.bucketId}`);
-
-    const bucketJSON = bucketDoc.toJSON();
-    res.status(200).json(bucketJSON);
-  } catch (error) {
-    next(error);
-  }
-}) as RequestHandler);
 
 /**
  * @route GET /bucket/:bucketId/m/:month
