@@ -5,7 +5,7 @@ const Bucket = models.Bucket;
 export default Object.freeze({
     listByUserId: async function (userId: string) {
         try {
-            const result = await Bucket.find({ user: userId }).lean();
+            const result = await Bucket.find({ user: userId }).sort({ name: 1 }).lean();
             return result;
         } catch (error) {
             throw error;

@@ -74,4 +74,18 @@ router.get("/m/:monthyear", (async (req, res, next) => {
   }
 }) as RequestHandler);
 
+router.get("/m/:monthyear/:bucketId", (async (req, res, next) => {
+  try {
+    const userId = getUserId(req);
+    const reqMonth = parseInt(req.params.monthyear.slice(0, 2));
+    const reqYear = parseInt(req.params.monthyear.slice(2));
+    const bucketId = req.params.bucketId;
+
+    const transactionReport = await transactionController.listByMonthAndBucket(userId, { month: reqMonth, year: reqYear }, bucketId);
+    res.json(transactionReport);
+  } catch (error) {
+    next(error);
+  }
+}));
+
 export default router;

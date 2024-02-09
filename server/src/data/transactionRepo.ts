@@ -8,7 +8,7 @@ export default Object.freeze({
             const filter = {
                 user: userId, date: new mongoMonthQueryDO(monthDO).generateQuery()
             }
-            const result = await TransactionDB.find(filter).lean()
+            const result = await TransactionDB.find(filter).sort({ date: -1 }).lean()
             return result;
         } catch (error) {
             throw error;
