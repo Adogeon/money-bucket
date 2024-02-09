@@ -1,9 +1,5 @@
 import express from "express";
-import type { Request, Response, NextFunction, RequestHandler } from "express";
-import mongoose from "mongoose";
-import Bucket from "../models/bucket";
 import { getUserId } from "./utils";
-import bucketServices from "src/layers/services/bucket.services";
 import bucketController from "src/controllers/bucket.controller";
 const router = express.Router();
 
@@ -53,7 +49,7 @@ router.get("/summary/:month", (async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}) as RequestHandler);
+}));
 
 router.get("/simple", async (req, res, next) => {
   try {
