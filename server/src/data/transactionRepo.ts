@@ -1,5 +1,4 @@
 import models from "src/models";
-import type { iTransaction } from "src/models/transaction";
 
 const TransactionDB = models.Transaction;
 
@@ -66,5 +65,5 @@ export default Object.freeze({
         } catch (error) {
             throw error;
         }
-    },
+    }
 })

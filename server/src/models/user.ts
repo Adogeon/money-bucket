@@ -1,22 +1,16 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import type { Document } from "mongoose";
-import type { iTransaction } from "./transaction";
-import type { iBucket } from "./bucket";
 
-export interface iUser extends Document {
+export interface iUserDoc extends Document, iUser {
   username: string;
   password: string;
-  currency: string;
-  transaction?: iTransaction[];
-  buckets?: iBucket[];
   comparePassword: (inputPassword: string) => Promise<boolean>;
 }
 
-const userSchema = new Schema<iUser>({
+const userSchema = new Schema<iUserDoc>({
   username: { type: String, required: true },
   password: { type: String, required: true },
-  currency: { type: String, default: "USD" },
 });
 
 userSchema.virtual("transactions", {
@@ -31,21 +25,16 @@ userSchema.virtual("buckets", {
   foreignField: "user",
 });
 
-userSchema.pre<iUser>("save", async function (next) {
+userSchema.pre<iUserDoc>("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();
 });
 
-/* userSchema.post<iUser>("find", async function(docs) {
-  for (let doc of docs) {
-    await doc.populate('transactions buckets')
-  }
-}) */
 
 userSchema.methods.comparePassword = async function (
-  this: iUser,
+  this: iUserDoc,
   inputPassword: string
 ): Promise<boolean> {
   try {
@@ -58,7 +47,7 @@ userSchema.methods.comparePassword = async function (
 
 userSchema.set("toJSON", { virtuals: true });
 
-const User = model<iUser>("User", userSchema, "user");
+const User = model<iUserDoc>("User", userSchema, "user");
 
 export type iUserModel = typeof User;
 export default User;

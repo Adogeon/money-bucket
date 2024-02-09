@@ -1,5 +1,4 @@
-import models from "../../models";
-import type { iUser } from "../../models/user";
+import models from "../models";
 
 const UserDB = models.User;
 
@@ -22,5 +21,12 @@ export default Object.freeze({
     deleteUser: async function (id: string) {
         const deletedUser = await UserDB.findByIdAndDelete(id);
         return deletedUser?._id === id ?? false;
+    },
+    verifyUserPassword: async function (username: string, password: string) {
+        const userDoc = await this.searchByUsername(username);
+        if (!userDoc) {
+            throw new Error(`Can't find user ${username}`);
+        }
+        return await userDoc.comparePassword(password);
     }
 })

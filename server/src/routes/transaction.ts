@@ -4,7 +4,6 @@ import type { ParamsDictionary } from "express-serve-static-core";
 
 import Transaction from "../models/transaction";
 import transactionController from "src/controllers/transaction.controller";
-import type { iTransaction } from "../models/transaction";
 import Bucket from "../models/bucket";
 import { getUserId, strToObjectId } from "./utils";
 
@@ -127,7 +126,6 @@ router.get("/m/:monthyear", (async (req, res, next) => {
     next(error);
   }
 }) as RequestHandler);
-
 /**
  * @route GET /transaction/:id
  * for getting detail about a transaction

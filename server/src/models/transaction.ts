@@ -1,17 +1,9 @@
 import { Schema, model } from "mongoose";
 import type { Types, Document } from "mongoose";
 
-export interface iTransaction extends Document {
-  summary: string;
-  amount: number;
-  currency: string;
-  date: Date;
-  from: Types.ObjectId;
-  to: Types.ObjectId;
-  user: Types.ObjectId;
-}
+export interface iTransactionDoc extends Document, iTransaction { };
 
-const TransactionSchema = new Schema<iTransaction>({
+const TransactionSchema = new Schema<iTransactionDoc>({
   summary: String,
   amount: Number,
   currency: String,
@@ -25,7 +17,7 @@ TransactionSchema.set("toJSON", {
   virtuals: true,
 });
 
-const Transaction = model<iTransaction>(
+const Transaction = model<iTransactionDoc>(
   "Transaction",
   TransactionSchema,
   "transaction"

@@ -5,7 +5,7 @@ import {
   createModelDoc,
   updateModelDoc,
   deleteModelDoc,
-} from "../data/data";
+} from "../../data/data";
 import { iTransaction } from "src/models/transaction";
 
 export const createNewTransaction = async (

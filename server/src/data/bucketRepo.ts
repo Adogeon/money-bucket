@@ -1,12 +1,19 @@
 import models from "src/models";
-import type { iBucket } from "src/models/bucket";
 
 const Bucket = models.Bucket;
 
 export default Object.freeze({
+    listByUserId: async function (userId: string) {
+        try {
+            const result = await Bucket.find({ user: userId }).lean();
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    },
     searchBucketById: async function (bucketId: string) {
         try {
-            const result = await Bucket.findOne({ _id: bucketId }).lean().populate({ path: "from", match: "_id name" }).populate({ path: "to", match: "_id name" });
+            const result = await Bucket.findOne({ _id: bucketId }).lean();
             return result;
         } catch (error) {
             throw error;

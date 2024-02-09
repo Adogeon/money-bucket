@@ -1,5 +1,5 @@
 import type { PipelineStage, FilterQuery, HydratedDocument } from "mongoose";
-import models from "../../models";
+import models from "../models";
 import { iUser } from "src/models/user";
 import { iTransaction } from "src/models/transaction";
 import { iBucket } from "src/models/bucket";

@@ -1,5 +1,4 @@
-import type { iUser } from "../../models/user";
-import userRepo from "../data/userRepo";
+import userRepo from "../../data/userRepo";
 
 const verifyUserLogin = async (username: string, password: string) => {
   try {

@@ -1,33 +1,13 @@
 import { Schema, model } from "mongoose";
-import type { Types, PopulatedDoc, Document } from "mongoose";
-import type { iTransaction } from "./transaction";
+import type { PopulatedDoc, Document } from "mongoose";
 
-export interface iBucket extends Document {
-  name: string;
-  type: string;
-  user: Types.ObjectId;
-  defaultLimit: number;
-  currency: string;
-  monthlyRecord?: [
-    {
-      month: string;
-      expense: number;
-    }
-  ];
+export interface iBucketDoc extends Document, iBucket {
   transactions?: PopulatedDoc<iTransaction & Document>;
 }
 
-const BucketSchema = new Schema<iBucket>({
+const BucketSchema = new Schema<iBucketDoc>({
   name: String,
   type: String,
-  defaultLimit: Number,
-  currency: String,
-  monthlyRecord: [
-    {
-      month: String,
-      expense: Number,
-    },
-  ],
   user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
@@ -37,6 +17,6 @@ BucketSchema.virtual("transactions", {
   foreignField: "bucket",
 });
 
-const Bucket = model<iBucket>("Bucket", BucketSchema, "bucket");
+const Bucket = model<iBucketDoc>("Bucket", BucketSchema, "bucket");
 
 export default Bucket;
