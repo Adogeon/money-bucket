@@ -1,26 +1,26 @@
 import transactionRepo from "src/data/transactionRepo";
 
 export default Object.freeze({
-    listByMonth: (userId: string, monthDO: monthDO) => {
+    listByMonth: function (userId: string, monthDO: monthDO) {
         return transactionRepo.listByMonth(userId, monthDO);
     },
-    listByMonthAndBucket: async (userId: string, monthDO: monthDO, bucketId: string) => {
-        const transactionList = await transactionRepo.listByMonth(userId, monthDO);
-        const filterFromBucketList = transactionList.filter(transaction => { transaction.from === bucketId })
-        const filterToBucketList = transactionList.filter(transaction => { transaction.to === bucketId });
+    listByMonthAndBucket: async function (userId: string, monthDO: monthDO, bucketId: string) {
+        const BucketMonthlyReport = await transactionRepo.listByMonthAndBucket(userId, monthDO, bucketId);
+        const totalFrom = BucketMonthlyReport.fromList.reduce((acc, current) => acc + current.amount, 0);
+        const totalTo = BucketMonthlyReport.fromList.reduce((acc, current) => acc + current.amount, 0);
 
-        return { fromList: filterFromBucketList, toList: filterToBucketList };
+        return { ...BucketMonthlyReport, totalFrom, totalTo };
     },
-    create: (resource: iTransaction) => {
+    create: function (resource: iTransaction) {
         return transactionRepo.addNewTransaction(resource);
     },
-    getOneById: (id: string) => {
+    getOneById: function (id: string) {
         return transactionRepo.searchTransactionById(id);
     },
-    updateById: (id: string, update: Partial<iTransaction>) => {
+    updateById: function (id: string, update: Partial<iTransaction>) {
         return transactionRepo.updateTransaction(id, update);
     },
-    deleteById: (id: string) => {
+    deleteById: function (id: string) {
         return transactionRepo.deleteTransaction(id);
     }
 })

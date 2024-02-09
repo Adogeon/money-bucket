@@ -4,6 +4,9 @@ export default Object.freeze({
     listByUserId: function (userId: string) {
         return bucketRepo.listByUserId(userId);
     },
+    listByUserIdWithMonthSummary: function (userId: string, month: monthDO) {
+        return bucketRepo.listByUserIdWithMonthSummary(userId, month);
+    },
     create: async function (resource: iBucket) {
         return bucketRepo.addNewBucket(resource)
     },

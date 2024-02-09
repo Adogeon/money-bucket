@@ -2,33 +2,25 @@ import models from "src/models";
 
 const TransactionDB = models.Transaction;
 
-class mongoMonthQueryDO implements monthQueryDO {
-    private _month: number;
-    private _year: number;
-    constructor(input: monthDO) {
-        this._month = input.month;
-        this._year = input.year;
-    }
-    generateQuery() {
-        return this._month === 12
-            ? {
-                $gte: `${this._year}-${this._month}-01`,
-                $lt: `${this._year + 1}-1-01`
-            } : {
-                $gte: `${this._year}-${this._month}-01`,
-                $lt: `${this._year}-${this._month + 1}-01`
-            }
-    }
-}
-
 export default Object.freeze({
     listByMonth: async function (userId: string, monthDO: monthDO) {
         try {
             const filter = {
                 user: userId, date: new mongoMonthQueryDO(monthDO).generateQuery()
             }
-            const result = await TransactionDB.find(filter).lean().populate({ path: "from", match: "_id name" }).populate({ path: "to", match: "_id name" })
+            const result = await TransactionDB.find(filter).lean()
             return result;
+        } catch (error) {
+            throw error;
+        }
+    },
+    listByMonthAndBucket: async function (userId: string, monthDO: monthDO, bucketId: string) {
+        try {
+            const transactionList = await this.listByMonth(userId, monthDO);
+            const filterFromBucketList = transactionList.filter(transaction => { transaction.from === bucketId })
+            const filterToBucketList = transactionList.filter(transaction => { transaction.to === bucketId });
+
+            return { fromList: filterFromBucketList, toList: filterToBucketList };
         } catch (error) {
             throw error;
         }

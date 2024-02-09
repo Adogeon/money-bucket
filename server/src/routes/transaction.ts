@@ -2,10 +2,8 @@ import express from "express";
 import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
-import Transaction from "../models/transaction";
 import transactionController from "src/controllers/transaction.controller";
-import Bucket from "../models/bucket";
-import { getUserId, strToObjectId } from "./utils";
+import { getUserId } from "./utils";
 
 const router = express.Router();
 
@@ -59,15 +57,6 @@ router
   })
 
 /**
- * @route POST /transaction/multi
- * for insert multiple transaction at once
- * expect req.user
- * return a transction document in JSON format
- */
-
-router.post("/multi");
-
-/**
  * @route GET /transaction/m/:month
  * for getting detail about all transaction within a month
  *
@@ -78,85 +67,11 @@ router.get("/m/:monthyear", (async (req, res, next) => {
     const userId = getUserId(req);
     const reqMonth = parseInt(req.params.monthyear.slice(0, 2));
     const reqYear = parseInt(req.params.monthyear.slice(2));
-    const transactionDocs = await Transaction.aggregate([
-      { $match: { user: userId } },
-      {
-        $addFields: {
-          id: "$_id",
-          month: { $month: "$date" },
-          year: { $year: "$date" },
-        },
-      },
-      {
-        $match: {
-          month: reqMonth,
-          year: reqYear,
-        },
-      },
-      {
-        $sort: {
-          date: -1,
-        },
-      },
-      {
-        $lookup: {
-          from: "bucket",
-          localField: "bucket",
-          foreignField: "_id",
-          as: "bucket",
-          pipeline: [
-            { $addFields: { id: "$_id" } },
-            { $project: { name: 1, id: 1, _id: 0 } },
-          ],
-        },
-      },
-      { $unwind: { path: "$bucket" } },
-      {
-        $project: {
-          month: 0,
-          year: 0,
-          user: 0,
-          _id: 0,
-          _v: 0,
-        },
-      },
-    ]);
-    res.status(200).json(transactionDocs);
+    const transactionList = await transactionController.listByMonth(userId, { month: reqMonth, year: reqYear })
+    res.json(transactionList);
   } catch (error) {
     next(error);
   }
 }) as RequestHandler);
-/**
- * @route GET /transaction/:id
- * for getting detail about a transaction
- * expect req.user
- *
- * return a specific transaction
- */
-
-/**
- * @route GET /transaction/bucket/:name
- * for gettting the bucket
- */
-router.get("/bucket/:name", (async (req, res, next) => {
-  try {
-    const userId = getUserId(req);
-    const bucketDoc = await Bucket.findOne({
-      name: req.params.name,
-      user: userId,
-    });
-    if (bucketDoc === null)
-      throw new Error(`Can't find bucket with name ${req.params.name}`);
-
-    const transactions = await bucketDoc.populate("transactions");
-    const bucketJSON = bucketDoc.toJSON();
-    bucketJSON.transactions = transactions;
-    res.status(200).json(bucketJSON);
-  } catch (error) {
-    next(error);
-  }
-
-}) as RequestHandler);
-
 
 export default router;
