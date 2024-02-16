@@ -1,4 +1,4 @@
-import transactionRepo from "src/data/transactionRepo";
+import transactionRepo from "../data/transactionRepo";
 
 export default Object.freeze({
     listByMonth: function (userId: string, monthDO: monthDO) {

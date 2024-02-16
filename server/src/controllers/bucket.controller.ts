@@ -13,7 +13,7 @@ export default Object.freeze({
     getBucketById: async function (id: string) {
         return bucketRepo.searchBucketById(id);
     },
-    updateBucketById: async function (id: string, update: iBucket) {
+    updateBucketById: async function (id: string, update: Partial<iBucket>) {
         return bucketRepo.updateBucket(id, update);
     },
     deleteBucketById: async function (id: string) {

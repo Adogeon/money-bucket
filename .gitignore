@@ -6,4 +6,4 @@ dist-ssr
 .env
 .csv
 **/*.csv
-
+*.code-workspace

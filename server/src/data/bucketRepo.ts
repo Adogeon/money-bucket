@@ -78,7 +78,7 @@ export default Object.freeze({
             throw error;
         }
     },
-    addNewBucket: async function (bucketInput: Partial<iBucket>) {
+    addNewBucket: async function (bucketInput: iBucket) {
         try {
             const newBucket = new Bucket(bucketInput);
             newBucket.save();

@@ -2,7 +2,7 @@ import express from "express";
 import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
-import transactionController from "src/controllers/transaction.controller";
+import transactionController from "../controllers/transaction.controller";
 import { getUserId } from "./utils";
 
 const router = express.Router();
