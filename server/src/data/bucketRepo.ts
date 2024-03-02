@@ -1,4 +1,4 @@
-import models from "src/models";
+import models from "../models";
 
 const Bucket = models.Bucket;
 

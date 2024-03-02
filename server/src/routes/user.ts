@@ -1,7 +1,7 @@
-import express from 'express'; 
+import express from 'express';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 import { getUserId } from './utils';
-import User from 'src/models/user';
+import User from '../models/user';
 
 const router: Router = express.Router();
 
@@ -14,11 +14,11 @@ router.get('/', (async (req: Request, res: Response, next: NextFunction) => {
     const userId = getUserId(req);
     const userDoc = await User.aggregate([
       {
-        $match: {_id: userId}
-      }, 
+        $match: { _id: userId }
+      },
       {
         $project: {
-          password: 0, 
+          password: 0,
           _v: 0
         }
       },
@@ -36,7 +36,7 @@ router.get('/', (async (req: Request, res: Response, next: NextFunction) => {
     };
     res.status(200).json(userDoc);
   } catch (error) {
-    next(error); 
+    next(error);
   }
 }) as RequestHandler)
 

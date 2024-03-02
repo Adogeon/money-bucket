@@ -1,6 +1,6 @@
 import express from "express";
 import { getUserId } from "./utils";
-import bucketController from "src/controllers/bucket.controller";
+import bucketController from "../controllers/bucket.controller";
 const router = express.Router();
 
 
