@@ -15,12 +15,12 @@ const Appbar = (): JSX.Element => (
       </Link>
     </div>
     <div className="flex space-x-3">
-      <Link to="/transaction/new">
+      <div>
         <span className="text-sm align-middle">Add transaction</span>
-      </Link>
-      <Link to="/fill">
+      </div>
+      <div>
         <span className="text-sm align-middle">Fill Bucket</span>
-      </Link>
+      </div>
       <div className="hover:cursor-pointer h-full">
         <span className="text-sm align-middle">Log Out</span>
       </div>

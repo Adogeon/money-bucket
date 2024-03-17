@@ -1,18 +1,16 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import Appbar from "../components/Appbar/Appbar";
+import { AuthContext } from "../context/AuthContext";
+import { QueryClient } from "@tanstack/react-query";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  auth: AuthContext;
+  queryClient: QueryClient;
+}>()({
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{' '}
-        <Link to="/bucket" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
+      <Appbar />
       <Outlet />
     </>
   ),
-})
+});

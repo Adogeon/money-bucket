@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { Transaction } from "../../types/transaction";
 
 interface TransactionRowProps {
