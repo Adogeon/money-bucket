@@ -3,13 +3,11 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import HomePage from "../pages/Home";
 
 export const Route = createFileRoute("/dashboard")({
-  beforeLoad: ({ context, location }) => {
+  beforeLoad: ({ context }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
-        to: "/",
-        search: {
-          redirect: location.href,
-        },
+        from: "/dashboard",
+        to: "/login",
       });
     }
   },

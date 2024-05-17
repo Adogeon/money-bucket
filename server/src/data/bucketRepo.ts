@@ -1,4 +1,7 @@
 import models from "../models";
+import mongoose from "mongoose";
+
+import { mongoMonthQueryDO } from "./utils/monthQueryDO";
 
 const Bucket = models.Bucket;
 
@@ -12,6 +15,7 @@ export default Object.freeze({
         }
     },
     listByUserIdWithMonthSummary: async function (userId: string, month: monthDO) {
+        console.log(new mongoMonthQueryDO(month).generateQuery());
         try {
             const TransactionPipeline = [
                 {
@@ -22,7 +26,7 @@ export default Object.freeze({
             ];
 
             const bucketList = await Bucket.aggregate([
-                { $match: { user: userId } },
+                { $match: { user: new mongoose.Types.ObjectId(userId) } },
                 {
                     $lookup: {
                         from: "transaction",
@@ -50,13 +54,13 @@ export default Object.freeze({
                         currency: 1,
                         totalFrom: { $sum: "$from.amount" },
                         totalTo: { $sum: "$to.amount" },
+                        to: 1,
+                        from: 1,
                     },
                 },
                 {
                     $project: {
                         _id: 0,
-                        from: 0,
-                        to: 0,
                     },
                 },
                 {

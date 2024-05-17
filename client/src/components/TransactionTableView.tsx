@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import type { Transaction } from "../../types/transaction";
-import { TransactionLinkRow, TransactionRow } from "./TransactionRow";
+import type { Transaction } from "../types/transaction";
+import { TransactionLinkRow, TransactionRow } from "./Table/TransactionRow";
 
 interface TableHeaderProps {
   headers: string[];

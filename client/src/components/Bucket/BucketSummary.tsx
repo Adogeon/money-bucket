@@ -1,25 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 export interface iBucketSummary {
   id: string;
   currency: string;
   name: string;
   limit: number;
-  totalSpend: number;
+  totalTo: number;
+  totalFrom: number;
+  type: string;
 }
 interface BucketSummaryProps {
   bucket: iBucketSummary;
 }
 
 const BucketSummary = ({ bucket }: BucketSummaryProps): JSX.Element => {
-  const { limit, totalSpend, name, id, currency } = bucket;
-  const available = Math.round((limit - totalSpend) * 100) / 100;
+  const { limit, totalTo, totalFrom, name, id, currency, type } = bucket;
+
+  const available = Math.round((totalFrom - totalTo) * 100) / 100;
   const bucketStatus = (available / limit) * 100;
 
   return (
     <div
       className={"w-full flex flex-col mb-2 items-stretch px-2 py-4 border-b"}
     >
-      <Link to={`/bucket/${id}`}>
+      <Link
+        to="/bucket/$bucketId"
+        params={{ bucketId: id }}
+        search={(prev) => ({ ...prev, monthQuery: "current-month" })}
+      >
         <div className={"w-full flex flex-row justify-between"}>
           <div className={"font-semibold text-secondary"}>{name}</div>
           <div className={"flex flex-col items-end"}>

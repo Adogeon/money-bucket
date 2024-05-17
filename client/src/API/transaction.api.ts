@@ -6,7 +6,7 @@ import type {
 } from "../types/transaction";
 
 export const addTransaction = async (
-  user: string | null,
+  user: string,
   newTransaction: any
 ): Promise<any> => {
   try {
@@ -25,7 +25,7 @@ export const addTransaction = async (
 
 type iMonthTransactions = Array<Transaction>;
 export const getMonthTransactions = async (
-  user: string | null,
+  user: string,
   month: Date = new Date()
 ): Promise<iMonthTransactions> => {
   const monthyear =
@@ -44,7 +44,7 @@ export const getMonthTransactions = async (
 };
 
 export const getTransactionDetail = async (
-  user: string | null,
+  user: string,
   transactionId: string
 ): Promise<iTransactionDisplay> => {
   try {
@@ -61,7 +61,7 @@ export const getTransactionDetail = async (
 };
 
 export const putTransactionEdit = async (
-  user: string | null,
+  user: string,
   transactionId: string,
   updateTransaction: Partial<iEditTransactionInput>
 ): Promise<any> => {
@@ -81,7 +81,7 @@ export const putTransactionEdit = async (
 };
 
 export const deleteTransaction = async (
-  user: string | null,
+  user: string,
   transactionId: string
 ): Promise<any> => {
   try {

@@ -43,8 +43,11 @@ router.get("/summary/:month", (async (req, res, next) => {
     const reqMonth = Number(req.params.month.slice(0, 2));
     const reqYear = Number(req.params.month.slice(2));
 
-    const bucketSummaryList = await bucketController.listByUserIdWithMonthSummary(userId, { month: reqMonth, year: reqYear })
+    console.log(userId);
+    console.log(reqMonth);
 
+    const bucketSummaryList = await bucketController.listByUserIdWithMonthSummary(userId, { month: reqMonth, year: reqYear })
+    console.log(bucketSummaryList)
     res.status(200).json(bucketSummaryList);
   } catch (error) {
     next(error);

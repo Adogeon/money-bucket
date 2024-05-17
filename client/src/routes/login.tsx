@@ -1,4 +1,4 @@
-import { MutationFunction, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { fetchUserLoginToken, iAuthToken } from "../API/auth.api";
 import { useAuth } from "../context/AuthContext";
@@ -34,7 +34,7 @@ function LoginPage() {
     },
     onSuccess: (data) => {
       auth.setToken(data.token);
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/", replace: true });
     },
   });
 
@@ -47,25 +47,27 @@ function LoginPage() {
     <div className="p-2">
       <div>You must log in!</div>
       <div className="h-2" />
-      <form onSubmit={onSubmit} className="flex gap-2">
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          className="border p-1 px-2 rounded"
-        />
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          className="border p-1 px-2 rounded"
-        />
-        <button
-          type="submit"
-          className="text-sm bg-blue-500 text-white border inline-block py-1 px-2 rounded"
-        >
-          Login
-        </button>
+      <form onSubmit={onSubmit}>
+        <div className="flex space-x-3">
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            className="border p-1 px-2 rounded"
+          />
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="border p-1 px-2 rounded"
+          />
+          <button
+            type="submit"
+            className="text-sm bg-blue-500 text-white border inline-block py-1 px-2 rounded"
+          >
+            Login
+          </button>
+        </div>
       </form>
     </div>
   );

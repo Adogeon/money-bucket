@@ -48,7 +48,7 @@ router.post("/login", (async (
         },
         serverSecret()
       );
-      res.status(200).json(token);
+      res.status(200).json({ token });
     } else {
       res.sendStatus(401);
     }
@@ -76,7 +76,7 @@ router.post("/register", (async (
   try {
     const userDoc = await User.create(req.body);
     const token = jsonwebtoken.sign({ id: userDoc._id }, serverSecret());
-    return res.status(200).json(token);
+    return res.status(200).json({ token });
   } catch (error) {
     next(error);
   }

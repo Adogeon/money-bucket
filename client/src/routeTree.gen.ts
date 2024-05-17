@@ -15,6 +15,8 @@ import { createFileRoute } from "@tanstack/react-router"
 import { Route as rootRoute } from "./routes/__root"
 import { Route as LoginImport } from "./routes/login"
 import { Route as DashboardImport } from "./routes/dashboard"
+import { Route as TransactionTransactionIdImport } from "./routes/transaction.$transactionId"
+import { Route as BucketBucketIdImport } from "./routes/bucket.$bucketId"
 
 // Create Virtual Routes
 
@@ -49,6 +51,16 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import("./routes/index.lazy").then((d) => d.Route))
 
+const TransactionTransactionIdRoute = TransactionTransactionIdImport.update({
+  path: "/$transactionId",
+  getParentRoute: () => TransactionLazyRoute,
+} as any)
+
+const BucketBucketIdRoute = BucketBucketIdImport.update({
+  path: "/$bucketId",
+  getParentRoute: () => BucketLazyRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module "@tanstack/react-router" {
@@ -73,6 +85,14 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof TransactionLazyImport
       parentRoute: typeof rootRoute
     }
+    "/bucket/$bucketId": {
+      preLoaderRoute: typeof BucketBucketIdImport
+      parentRoute: typeof BucketLazyImport
+    }
+    "/transaction/$transactionId": {
+      preLoaderRoute: typeof TransactionTransactionIdImport
+      parentRoute: typeof TransactionLazyImport
+    }
   }
 }
 
@@ -82,8 +102,8 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   DashboardRoute,
   LoginRoute,
-  BucketLazyRoute,
-  TransactionLazyRoute,
+  BucketLazyRoute.addChildren([BucketBucketIdRoute]),
+  TransactionLazyRoute.addChildren([TransactionTransactionIdRoute]),
 ])
 
 /* prettier-ignore-end */
