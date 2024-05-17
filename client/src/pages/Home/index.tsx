@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <div className="w-full flex flex-col justify-center">
       <MonthPicker month={month} onMonthChange={handleMonthChange} />
-      <div className="flex flex-col lg:flex-row justify-evenly">
+      <div className="flex flex-col md:flex-row justify-evenly">
         <div className="lg:w-1/4">
           <UserBucketList month={month} />
         </div>

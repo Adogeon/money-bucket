@@ -17,7 +17,7 @@ function UserBucketList({ month }: userBucketListProps): JSX.Element {
 
   console.log(data);
 
-  return <BucketListView bucketList={data} isLoading={isFetching} />;
+  return <BucketListView buckets={data} isLoading={isFetching} />;
 }
 
 export default UserBucketList;
