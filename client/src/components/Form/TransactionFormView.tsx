@@ -23,15 +23,6 @@ export const TransactionFormView = ({
   const converDateToStrVal = (date: Date) =>
     new Date(date).toISOString().split("T")[0];
 
-  console.log("Re-render");
-  console.log("value", value);
-  console.log("summary", value ? value.summary : "");
-  console.log("amount", value ? value.amount : 0);
-  console.log(
-    "date",
-    value ? converDateToStrVal(value.date) : converDateToStrVal(new Date())
-  );
-
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex flex-col mb-4">

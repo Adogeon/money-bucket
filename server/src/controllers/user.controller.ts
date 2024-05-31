@@ -1,19 +1,20 @@
 import userRepo from "../data/userRepo";
+import type { iUser } from "../common/types";
 
 export default Object.freeze({
-    createNewUser: function (username: string, password: string) {
-        return userRepo.addNewUser(username, password)
+    createNewUser: async function (username: string, password: string) {
+        return await userRepo.addNewUser(username, password)
     },
-    getUserDetail: function (userId: string) {
-        return userRepo.searchById(userId);
+    getUserDetail: async function (userId: string) {
+        return await userRepo.searchById(userId);
     },
-    updateUser: function (
+    updateUser: async function (
         userId: string,
         userUpdate: Partial<iUser>
     ) {
-        return userRepo.updateUser(userId, userUpdate);
+        return await userRepo.updateUser(userId, userUpdate);
     },
-    deleteUser: function (userId: string) {
-        return userRepo.deleteUser(userId)
+    deleteUser: async function (userId: string) {
+        return await userRepo.deleteUser(userId)
     }
 })

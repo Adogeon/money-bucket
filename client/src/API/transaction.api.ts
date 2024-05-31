@@ -37,7 +37,6 @@ export const getMonthTransactions = async (
     const result = await handleResponse(fetchResponse);
     return result;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

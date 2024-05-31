@@ -1,10 +1,12 @@
-export class mongoMonthQueryDO implements monthQueryDO {
-    private _month: number;
-    private _year: number;
+import type { monthDO } from "src/common/types";
+export class MongoMonthQueryDO {
+    readonly _month: number;
+    readonly _year: number;
     constructor(input: monthDO) {
         this._month = input.month;
         this._year = input.year;
-    }
+    };
+
     generateQuery() {
         return this._month === 12
             ? {

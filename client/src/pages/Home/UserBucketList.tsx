@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getMonthlyBucketSummary } from "../../API/bucket.api";
+import { getUserMonthlyBudget } from "../../API/budget.api";
 import BucketListView from "../../components/Bucket/BucketListView";
 import { useAuth } from "../../context/AuthContext";
 
@@ -12,7 +12,7 @@ function UserBucketList({ month }: userBucketListProps): JSX.Element {
   const auth = useAuth();
   const { data, isFetching } = useQuery({
     queryKey: ["listBucket", { month }],
-    queryFn: () => getMonthlyBucketSummary(auth.token, month),
+    queryFn: () => getUserMonthlyBudget(auth.token, month),
   });
 
   return <BucketListView buckets={data} isLoading={isFetching} />;

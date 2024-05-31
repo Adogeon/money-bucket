@@ -1,22 +1,29 @@
 import bucketRepo from "../data/bucketRepo";
+import budgetRepo from "../data/budgetRepo";
+import type { monthDO, iBucket } from "../common/types";
 
 export default Object.freeze({
-    listByUserId: function (userId: string) {
-        return bucketRepo.listByUserId(userId);
+    listByUserId: async function (userId: string) {
+        return await bucketRepo.listByUserId(userId);
     },
-    listByUserIdWithMonthSummary: function (userId: string, month: monthDO) {
-        return bucketRepo.listByUserIdWithMonthSummary(userId, month);
+    listByUserIdWithMonthSummary: async function (userId: string, month: monthDO) {
+        const bucketList = await bucketRepo.listByUserIdWithMonthSummary(userId, month);
+        return await Promise.allSettled(bucketList.map(async bucket => {
+            const budget = await budgetRepo.listBucketMonthlyBudget(month, bucket._id)
+            const { defaultLimit, ...rest } = bucket
+            return { ...rest, budget: budget?.limit ?? defaultLimit }
+        }))
     },
     create: async function (resource: iBucket) {
-        return bucketRepo.addNewBucket(resource)
+        return await bucketRepo.addNewBucket(resource)
     },
     getBucketById: async function (id: string) {
-        return bucketRepo.searchBucketById(id);
+        return await bucketRepo.searchBucketById(id);
     },
     updateBucketById: async function (id: string, update: Partial<iBucket>) {
-        return bucketRepo.updateBucket(id, update);
+        return await bucketRepo.updateBucket(id, update);
     },
     deleteBucketById: async function (id: string) {
-        return bucketRepo.deleteBucket(id);
+        return await bucketRepo.deleteBucket(id);
     }
 })
