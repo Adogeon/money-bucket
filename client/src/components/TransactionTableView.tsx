@@ -43,16 +43,15 @@ export const TransactionTableView = ({
 };
 
 interface ShortTransactionTableViewProps {
-  data: Omit<Transaction, "bucket">[];
+  transactions: Transaction[];
 }
 
 export const ShortTransactionTableView = ({
-  data,
+  transactions,
 }: ShortTransactionTableViewProps) => {
-  console.log("data", data);
   return (
     <TableHeader headers={["Date", "Summary", "Amount"]}>
-      {data.map((transaction) => (
+      {transactions.map((transaction) => (
         <TransactionLinkRow
           data={transaction}
           key={`link-row-${transaction.id}`}

@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import type { Document } from "mongoose";
+import type { iUser } from "src/common/types";
 
 export interface iUserDoc extends Document, iUser {
   username: string;

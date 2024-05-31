@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import type { PopulatedDoc, Document } from "mongoose";
+import type { iBucket, iTransaction } from "../common/types";
 
 export interface iBucketDoc extends Document, iBucket {
   transactions?: PopulatedDoc<iTransaction & Document>;

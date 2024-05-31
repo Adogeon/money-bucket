@@ -3,11 +3,12 @@ import type { Request, RequestHandler } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
 import transactionController from "../controllers/transaction.controller";
-import { getUserId } from "./utils";
+import { convertParamsToMonthDO, getUserId } from "./utils";
+import type { iTransaction } from "../common/types";
 
 const router = express.Router();
 
-type TypedBodyReq<T> = Request<ParamsDictionary, Record<string, any>, T>;
+type TypedBodyReq<T> = Request<ParamsDictionary, Record<string, unknown>, T>;
 
 /**
  * @route POST /transaction
@@ -28,16 +29,16 @@ router.post("/", (async (req: TypedBodyReq<iTransactionInput>, res, next) => {
 
 router
   .route("/:id")
-  .get(async (req, res, next) => {
+  .get((async (req, res, next) => {
     try {
       const transactionId = req.params.id;
-      const transactionDoc = transactionController.getOneById(transactionId);
+      const transactionDoc = await transactionController.getOneById(transactionId);
       res.json(transactionDoc);
     } catch (error) {
       next(error);
     }
-  })
-  .put(async (req, res, next) => {
+  }) as RequestHandler)
+  .put((async (req, res, next) => {
     try {
       const id = req.params.id;
       const update = req.body;
@@ -46,7 +47,7 @@ router
     } catch (error) {
       next(error);
     }
-  }).delete(async (req, res, next) => {
+  }) as RequestHandler).delete((async (req, res, next) => {
     try {
       const id = req.params.id;
       const isSuccess = await transactionController.deleteById(id);
@@ -54,7 +55,7 @@ router
     } catch (error) {
       next(error);
     }
-  })
+  }) as RequestHandler)
 
 /**
  * @route GET /transaction/m/:month
@@ -62,30 +63,30 @@ router
  *
  * return multiple transaction within a month
  */
-router.get("/m/:monthyear", (async (req, res, next) => {
+router.get("/m/:month", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    const reqMonth = parseInt(req.params.monthyear.slice(0, 2));
-    const reqYear = parseInt(req.params.monthyear.slice(2));
-    const transactionList = await transactionController.listByMonth(userId, { month: reqMonth, year: reqYear })
+    const month = convertParamsToMonthDO(req.params.month)
+    const transactionList = await transactionController.listByMonth(userId, month)
     res.json(transactionList);
   } catch (error) {
     next(error);
   }
 }) as RequestHandler);
 
-router.get("/m/:monthyear/:bucketId", (async (req, res, next) => {
+router.get("/m/:month&:bucketId", ((async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    const reqMonth = parseInt(req.params.monthyear.slice(0, 2));
-    const reqYear = parseInt(req.params.monthyear.slice(2));
+    const month = convertParamsToMonthDO(req.params.month)
     const bucketId = req.params.bucketId;
 
-    const transactionReport = await transactionController.listByMonthAndBucket(userId, { month: reqMonth, year: reqYear }, bucketId);
+    const transactionReport = await transactionController.listByMonthAndBucket(userId, month, bucketId);
     res.json(transactionReport);
   } catch (error) {
     next(error);
   }
-}));
+})) as RequestHandler);
+
+
 
 export default router;

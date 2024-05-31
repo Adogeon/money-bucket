@@ -34,7 +34,10 @@ export const TransactionLinkRow = ({ data }: TransactionLinkRowProps) => {
   const navigate = useNavigate();
 
   const handleOnClick = () => {
-    navigate(`/transaction/${data.id}`);
+    navigate({
+      to: `/transaction/$transactionId`,
+      params: { transactionId: data.id },
+    });
   };
 
   return (

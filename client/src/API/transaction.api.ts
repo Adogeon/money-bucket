@@ -4,6 +4,7 @@ import type {
   iEditTransactionInput,
   iTransactionDisplay,
 } from "../types/transaction";
+import { dateToMonthQuery } from "../utils/month";
 
 export const addTransaction = async (
   user: string,
@@ -28,11 +29,9 @@ export const getMonthTransactions = async (
   user: string,
   month: Date = new Date()
 ): Promise<iMonthTransactions> => {
-  const monthyear =
-    `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
   try {
     const fetchResponse = await createRequest(
-      `/api/transaction/m/${monthyear}`,
+      `/api/transaction/m/${dateToMonthQuery(month)}`,
       user
     );
     const result = await handleResponse(fetchResponse);
@@ -42,6 +41,29 @@ export const getMonthTransactions = async (
     throw error;
   }
 };
+
+interface bucketMonthlySpending {
+  transactions: Transaction[],
+  totalFrom: number,
+  totalTo: number
+}
+export const getBucketMonthlyTransaction = async (
+  token: string | null,
+  month: Date,
+  bucketId: string
+): Promise<bucketMonthlySpending> => {
+  try {
+    const fetchResponse = await createRequest(
+      `/api/transaction/m/${dateToMonthQuery(month)}&${bucketId}`,
+      token
+    );
+    const result = await handleResponse(fetchResponse);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 export const getTransactionDetail = async (
   user: string,

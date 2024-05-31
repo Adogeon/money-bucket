@@ -26,3 +26,15 @@ export const handleResponse = async (response: Response): Promise<any> => {
     throw new Error("Something went horribly wrong");
   }
 };
+
+export const fetchDataRequest = async (
+  url: string,
+  auth: string | null,
+) => {
+  try {
+    const response = await createRequest(url, auth, "GET");
+    return await handleResponse(response);
+  } catch (error) {
+    throw error
+  }
+}

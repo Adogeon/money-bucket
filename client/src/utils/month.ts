@@ -13,3 +13,7 @@ export const monthSearchToDate = (search: string) => {
 export const dateToMonthSearch = (date: Date) => {
     return `${monthShort[date.getMonth()]}-${date.getFullYear()}`
 }
+
+export const dateToMonthQuery = (date: Date) => {
+    return `${date.getMonth() + 1}`.padStart(2, "0") + `${date.getFullYear()}`
+}

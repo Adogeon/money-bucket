@@ -21,7 +21,6 @@ import { Route as BucketBucketIdImport } from "./routes/bucket.$bucketId"
 // Create Virtual Routes
 
 const TransactionLazyImport = createFileRoute("/transaction")()
-const BucketLazyImport = createFileRoute("/bucket")()
 const IndexLazyImport = createFileRoute("/")()
 
 // Create/Update Routes
@@ -30,11 +29,6 @@ const TransactionLazyRoute = TransactionLazyImport.update({
   path: "/transaction",
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import("./routes/transaction.lazy").then((d) => d.Route))
-
-const BucketLazyRoute = BucketLazyImport.update({
-  path: "/bucket",
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import("./routes/bucket.lazy").then((d) => d.Route))
 
 const LoginRoute = LoginImport.update({
   path: "/login",
@@ -57,8 +51,8 @@ const TransactionTransactionIdRoute = TransactionTransactionIdImport.update({
 } as any)
 
 const BucketBucketIdRoute = BucketBucketIdImport.update({
-  path: "/$bucketId",
-  getParentRoute: () => BucketLazyRoute,
+  path: "/bucket/$bucketId",
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -77,17 +71,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    "/bucket": {
-      preLoaderRoute: typeof BucketLazyImport
-      parentRoute: typeof rootRoute
-    }
     "/transaction": {
       preLoaderRoute: typeof TransactionLazyImport
       parentRoute: typeof rootRoute
     }
     "/bucket/$bucketId": {
       preLoaderRoute: typeof BucketBucketIdImport
-      parentRoute: typeof BucketLazyImport
+      parentRoute: typeof rootRoute
     }
     "/transaction/$transactionId": {
       preLoaderRoute: typeof TransactionTransactionIdImport
@@ -102,8 +92,8 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   DashboardRoute,
   LoginRoute,
-  BucketLazyRoute.addChildren([BucketBucketIdRoute]),
   TransactionLazyRoute.addChildren([TransactionTransactionIdRoute]),
+  BucketBucketIdRoute,
 ])
 
 /* prettier-ignore-end */

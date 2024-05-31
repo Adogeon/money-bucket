@@ -17,11 +17,16 @@ export default Object.freeze({
     },
     listByMonthAndBucket: async function (userId: string, monthDO: monthDO, bucketId: string) {
         try {
-            const transactionList = await this.listByMonth(userId, monthDO);
-            const filterFromBucketList = transactionList.filter(transaction => { transaction.from === bucketId })
-            const filterToBucketList = transactionList.filter(transaction => { transaction.to === bucketId });
+            const transactionList = await TransactionDB.find({
+                user: userId,
+                date: new mongoMonthQueryDO(monthDO).generateQuery(),
+                $or: [
+                    { from: bucketId },
+                    { to: bucketId }
+                ]
+            }).sort({ date: -1 }).lean({ getters: true });
 
-            return { fromList: filterFromBucketList, toList: filterToBucketList };
+            return transactionList;
         } catch (error) {
             throw error;
         }

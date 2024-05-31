@@ -1,5 +1,6 @@
 import models from "../models";
 
+import type { iUser } from "src/common/types";
 const UserDB = models.User;
 
 export default Object.freeze({
@@ -24,7 +25,7 @@ export default Object.freeze({
     },
     verifyUserPassword: async function (username: string, password: string) {
         const userDoc = await this.searchByUsername(username);
-        if (!userDoc) {
+        if (userDoc === null) {
             throw new Error(`Can't find user ${username}`);
         }
         return await userDoc.comparePassword(password);

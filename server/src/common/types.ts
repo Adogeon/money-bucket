@@ -1,18 +1,14 @@
-interface monthDO {
+export interface monthDO {
     month: number,
     year: number
 }
 
-interface monthQueryDO {
-    generateQuery(): any
-}
-
-interface TransactionVO {
+export interface TransactionVO {
     amount: number,
     currency: string
 }
 
-interface iTransaction {
+export interface iTransaction {
     summary: string;
     amount: number;
     currency: string;
@@ -22,31 +18,27 @@ interface iTransaction {
     user: iUser | string;
 }
 
-interface iBucket {
+export interface iBucket {
     name: string;
     type: string;
     user: iUser | string;
 }
 
-interface iTransaction {
-    amount: number,
-    currency: string,
-}
-
-interface iUser {
+export interface iUser {
     username: string;
     password: string;
     comparePassword: (inputPassword: string) => Promise<boolean>;
 }
 
-interface iBudget {
+export interface iBudget {
     period: monthDO;
     bucket: iBucket | string,
-    limit: TransactionVO,
-    spend: TransactionVO
+    user: iUser | string,
+    limit: number,
+    type: string
 }
 
-interface iReportBuilder {
+export interface iReportBuilder {
     setUser: (userId: string) => void;
     setBucket: (bucketId: string) => void;
     setPeriod: (month: monthDO) => void;

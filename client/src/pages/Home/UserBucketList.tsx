@@ -15,8 +15,6 @@ function UserBucketList({ month }: userBucketListProps): JSX.Element {
     queryFn: () => getMonthlyBucketSummary(auth.token, month),
   });
 
-  console.log(data);
-
   return <BucketListView buckets={data} isLoading={isFetching} />;
 }
 

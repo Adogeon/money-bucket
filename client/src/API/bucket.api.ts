@@ -9,7 +9,7 @@ export const getMonthlyBucketSummary = async (
     `${month.getMonth() + 1}`.padStart(2, "0") + `${month.getFullYear()}`;
   try {
     const getBucketSummaryResponse = await createRequest(
-      `/api/bucket/summary/${monthStr}`,
+      `/api/bucket/m/${monthStr}`,
       user
     );
     const bucketSummaries = await handleResponse(getBucketSummaryResponse);

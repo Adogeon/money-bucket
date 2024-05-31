@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useSuspenseQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getBucketDetail } from "../API/bucket.api";
 import { useAuth } from "../context/AuthContext";
@@ -7,11 +11,23 @@ import { useAuth } from "../context/AuthContext";
 import MonthPicker from "../components/MonthPicker";
 import { ShortTransactionTableView } from "../components/TransactionTableView";
 import { dateToMonthSearch, monthSearchToDate } from "../utils/month";
+import { getBucketMonthlyTransaction } from "../API/transaction.api";
 
 const bucketDetailQuery = (token: string | null, bucketId: string) => {
   return queryOptions({
     queryKey: ["getBucketDetail", bucketId],
     queryFn: () => getBucketDetail(token, bucketId),
+  });
+};
+
+const bucketMonthlyTransactionQuery = (
+  token: string | null,
+  bucketId: string,
+  month: Date
+) => {
+  return queryOptions({
+    queryKey: ["getBucketMonthlyTransaction", bucketId, month],
+    queryFn: () => getBucketMonthlyTransaction(token, month, bucketId),
   });
 };
 
@@ -40,12 +56,14 @@ function BucketDetailComponent() {
   const bucketQuery = useSuspenseQuery(
     bucketDetailQuery(auth.token, params.bucketId)
   );
-  const { data } = bucketQuery;
+  const { data: bucket } = bucketQuery;
   const navigate = useNavigate({ from: Route.fullPath });
-  //adding route query for month
-  //handle month change is equal to changing search query
-
   const [month, setMonth] = useState(monthSearchToDate(search.monthQuery));
+  const transactionQuery = useQuery(
+    bucketMonthlyTransactionQuery(auth.token, bucket._id, month)
+  );
+
+  const { data, isFetching } = transactionQuery;
 
   useEffect(() => {
     navigate({
@@ -65,22 +83,56 @@ function BucketDetailComponent() {
   return (
     <div className="mx-auto container">
       <h1 className="text-center text-2xl font-extrabold text-primary">
-        {data.name}
+        {bucket.name}
       </h1>
       <MonthPicker month={month} onMonthChange={handleMonthChange} />
-      <section>
-        <p>
-          <em>Spending: </em>
-          <span>{`${data.totalSpend} ${data.currency}`}</span>
-        </p>
-        <p>
-          <em>Limit: </em>
-          <span>{`${data.defaultLimit} ${data.currency}`}</span>
-        </p>
-      </section>
-      <section>
-        <ShortTransactionTableView data={data.transactions} />
-      </section>
+      {isFetching ? (
+        <div> Fetching Transaction </div>
+      ) : (
+        <>
+          <section>
+            {bucket.type === "Expense" ? (
+              <>
+                <p>
+                  <em>Spending: </em>
+                  <span>{`${data?.totalTo ?? 0} ${bucket.currency}`}</span>
+                </p>
+                <p>
+                  <em>Limit: </em>
+                  <span>{`${bucket.defaultLimit} ${bucket.currency}`}</span>
+                </p>
+              </>
+            ) : bucket.type === "Asset" ? (
+              <>
+                <p>
+                  <em>Spending: </em>
+                  <span>{`${data?.totalTo ?? 0} ${bucket.currency}`}</span>
+                </p>
+                <p>
+                  <em>Limit: </em>
+                  <span>{`${bucket.defaultLimit} ${bucket.currency}`}</span>
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  <em>Spending: </em>
+                  <span>{`${data?.totalTo ?? 0} ${bucket.currency}`}</span>
+                </p>
+                <p>
+                  <em>Limit: </em>
+                  <span>{`${bucket.defaultLimit} ${bucket.currency}`}</span>
+                </p>
+              </>
+            )}
+          </section>
+          <section>
+            <ShortTransactionTableView
+              transactions={data?.transactions ?? []}
+            />
+          </section>
+        </>
+      )}
     </div>
   );
 }
