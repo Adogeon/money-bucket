@@ -3,7 +3,7 @@ export interface iBucketSummary {
   id: string;
   currency: string;
   name: string;
-  limit: number;
+  budget: number;
   totalTo: number;
   totalFrom: number;
   type: string;
@@ -13,10 +13,10 @@ interface BucketSummaryProps {
 }
 
 const BucketSummary = ({ bucket }: BucketSummaryProps): JSX.Element => {
-  const { limit, totalTo, totalFrom, name, id, currency, type } = bucket;
+  const { budget, totalTo, totalFrom, name, id, currency, type } = bucket;
 
-  const available = Math.round((totalFrom - totalTo) * 100) / 100;
-  const bucketStatus = (available / limit) * 100;
+  const available = Math.round((budget - totalTo) * 100) / 100;
+  const bucketStatus = (available / budget) * 100;
 
   return (
     <div
@@ -39,7 +39,7 @@ const BucketSummary = ({ bucket }: BucketSummaryProps): JSX.Element => {
             </p>
             <p
               className={"text-sm font-light text-gray-400"}
-            >{`${limit} ${currency}`}</p>
+            >{`${budget} ${currency}`}</p>
           </div>
         </div>
 
