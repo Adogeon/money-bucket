@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getUserMonthlyBudget } from "../../API/budget.api";
 import BucketListView from "../../components/Bucket/BucketListView";
 import { useAuth } from "../../context/AuthContext";
 import { getMonthlyBucketSummary } from "../../API/bucket.api";
