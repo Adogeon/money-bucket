@@ -67,7 +67,7 @@ router.get("/m/:month", (async (req, res, next) => {
   try {
     const userId = getUserId(req);
     const month = convertParamsToMonthDO(req.params.month)
-    console.log(req.params);
+      ;
     const transactionList = await transactionController.listByMonth(userId, month)
     res.json(transactionList);
   } catch (error) {
@@ -80,7 +80,7 @@ router.get("/m/:month/:bucketId", ((async (req, res, next) => {
     const userId = getUserId(req);
     const month = convertParamsToMonthDO(req.params.month)
     const bucketId = req.params.bucketId;
-    console.log(req.params);
+
     const transactionReport = await transactionController.listByMonthAndBucket(userId, month, bucketId);
     res.json(transactionReport);
   } catch (error) {

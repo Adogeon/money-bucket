@@ -2,11 +2,11 @@ import express from "express";
 import type { RequestHandler } from "express";
 
 import { convertParamsToMonthDO, getUserId } from "./utils";
-import budgetRepo from "src/data/budgetRepo";
+import budgetRepo from "../data/budgetRepo";
 
 const router = express.Router();
 
-router.get("/:month", (async (req, res, next) => {
+router.get("/m/:month", (async (req, res, next) => {
     try {
         const userId = getUserId(req);
         const month = convertParamsToMonthDO(req.params.month);
@@ -17,7 +17,7 @@ router.get("/:month", (async (req, res, next) => {
     }
 }) as RequestHandler)
 
-router.get("/:month&:bucket", (async (req, res, next) => {
+router.get("/m/:month/:bucket", (async (req, res, next) => {
     try {
         const month = convertParamsToMonthDO(req.params.month);
         const result = await budgetRepo.listBucketMonthlyBudget(month, req.params.bucket);
