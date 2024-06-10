@@ -50,6 +50,7 @@ export default Object.freeze({
                     totalTo: { $sum: "$to.amount" },
                     to: 1,
                     from: 1,
+                    defaultLimit: 1,
                 },
             },
             {

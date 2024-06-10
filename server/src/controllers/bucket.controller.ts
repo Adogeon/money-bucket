@@ -8,8 +8,8 @@ export default Object.freeze({
     },
     listByUserIdWithMonthSummary: async function (userId: string, month: monthDO) {
         const bucketList = await bucketRepo.listByUserIdWithMonthSummary(userId, month);
-        return await Promise.allSettled(bucketList.map(async bucket => {
-            const budget = await budgetRepo.listBucketMonthlyBudget(month, bucket._id)
+        return await Promise.all(bucketList.map(async bucket => {
+            const budget = await budgetRepo.listBucketMonthlyBudget(month, bucket.id)
             const { defaultLimit, ...rest } = bucket
             return { ...rest, budget: budget?.limit ?? defaultLimit }
         }))
