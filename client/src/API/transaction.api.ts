@@ -53,7 +53,7 @@ export const getBucketMonthlyTransaction = async (
 ): Promise<bucketMonthlySpending> => {
   try {
     const fetchResponse = await createRequest(
-      `/api/transaction/m/${dateToMonthQuery(month)}&${bucketId}`,
+      `/api/transaction/m/${dateToMonthQuery(month)}/${bucketId}`,
       token
     );
     const result = await handleResponse(fetchResponse);
