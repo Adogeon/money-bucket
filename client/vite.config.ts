@@ -1,12 +1,18 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from "vite";
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), TanStackRouterVite({
     quoteStyle: "double"
   })],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./tests/setup.ts'],
+    globals: true
+  },
   server: {
     proxy: {
       "/api": {
@@ -15,7 +21,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
         secure: false,
         configure: (proxy, _options) => {
-          console.log(proxy);
           proxy.on("error", (err, _req, _res) => {
             console.log("proxy error", err);
           });
